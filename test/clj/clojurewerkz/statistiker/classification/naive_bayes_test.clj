@@ -1,4 +1,4 @@
-(ns clojurewerkz.statistiker.classification.naive-bayes
+(ns clojurewerkz.statistiker.classification.naive-bayes-test
   (:require [clojure.test :refer :all]
             [clojurewerkz.statistiker.classification.naive-bayes :refer :all]))
 
