@@ -22,3 +22,22 @@
                          :points (map (fn [a] (with-meta (vec (.getPoint a))
                                                (.getMetadata a)))
                                       (.getPoints %)))))))
+
+(defn cluster-by
+  "Clusters the hashmaps by fields. Fields should be given as vector. Field values
+   should be numerical.
+
+   Resulting hashmap will be returned with :cluster-id field that identifies the cluster"
+  [data fields]
+  (let [vectors  (map (fn [point]
+                        (with-meta
+                          (into [] (for [field fields] (get point field)))
+                          point))
+                      data)
+        clusters (map :points (cluster/cluster vectors 5 200))]
+    (->> clusters
+         (map vector (iterate inc (int 0)))
+         (map (fn [[cluster points]]
+                (map #(assoc (meta %) :cluster-id cluster) points)))
+         ;; mapcat identity?
+         flatten)))
