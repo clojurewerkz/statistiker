@@ -34,7 +34,7 @@
                           (into [] (for [field fields] (get point field)))
                           point))
                       data)
-        clusters (map :points (cluster/cluster vectors 5 200))]
+        clusters (map :points (cluster vectors 5 200))]
     (->> clusters
          (map vector (iterate inc (int 0)))
          (map (fn [[cluster points]]
