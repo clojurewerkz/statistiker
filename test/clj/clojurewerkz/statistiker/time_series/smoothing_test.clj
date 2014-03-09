@@ -9,7 +9,19 @@
     (is (= [4 5 6 7 8] (f [1 2 3 4 5 6 7] 8)))))
 
 (deftest linear-smooth-seq-test
-  (is (= [3.0 4.0 5.0 6.0] (linear-smooth-seq 5 [1 2 3 4 5 6 7 8]))))
+  (is (= [3.0 4.0 5.0 6.0] (linear-smooth-seq 5 [1 2 3 4 5 6 7 8])))
+  (let [vals [{:val 1 :meta 1}
+              {:val 2 :meta 2}
+              {:val 3 :meta 3}
+              {:val 4 :meta 4}
+              {:val 5 :meta 5}
+              {:val 6 :meta 6}
+              {:val 7 :meta 7}
+              {:val 8 :meta 8}]]
+    (is (= [{:val 3.0 :meta 5}
+            {:val 4.0 :meta 6}
+            {:val 5.0 :meta 7}
+            {:val 6.0 :meta 8}] (linear-smooth-seq 5 vals :val)))))
 
 (deftest linear-smooth-stream-test
   (let [res (atom [])

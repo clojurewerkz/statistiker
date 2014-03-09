@@ -27,5 +27,12 @@
            (consume-fn (assoc i field (mean @window))))))))
 
 (defn linear-smooth-seq
-  [window lst]
-  (map mean (partition window 1 lst)))
+  ([window lst]
+     (map mean (partition window 1 lst)))
+  ;; swap lst and field
+  ([window lst field]
+     (map (fn [items]
+            (let [v (map #(get % field) items)
+                  m (mean v)]
+              (assoc (last items) field m)))
+          (partition window 1 lst))))
