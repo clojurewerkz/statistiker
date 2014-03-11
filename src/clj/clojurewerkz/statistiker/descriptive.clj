@@ -1,15 +1,9 @@
 (ns clojurewerkz.statistiker.descriptive
+  (:import [org.apache.commons.math3.stat.descriptive.rank Percentile])
   (:require [clojurewerkz.statistiker.fast-math :refer :all]))
 
-(defn get-rank
-  [amount percentile]
-  (assert (<= percentile 100))
-  (-> (* (/ percentile 100) (dec amount))
-      Math/ceil
-      int))
-
 (def percentiles
-  {:min 0
+  {:min 1
    :max 100
    :median 50
    :25 25
@@ -17,10 +11,17 @@
 
 (defn fivenum
   [values]
-  (let [sorted (sort values)
-        amount (count values)]
-    {:min    (nth sorted (get-rank amount 0))
-     :25     (nth sorted (get-rank amount 25))
-     :median (nth sorted (get-rank amount 50))
-     :75     (nth sorted (get-rank amount 75))
-     :max    (nth sorted (get-rank amount 100) )}))
+  (let [p (Percentile.)]
+    (.setData p (double-array values))
+    (reduce (fn [acc [k v]]
+              (assoc acc k (.evaluate p (double v))))
+            {}
+            percentiles)))
+
+(defn iqr
+  [values]
+  (let [p              (Percentile.)
+        _              (.setData p (double-array values))
+        first-quartile (.evaluate p (double 25))
+        third-quartile (.evaluate p (double 75))]
+    (- third-quartile first-quartile)))
