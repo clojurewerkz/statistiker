@@ -28,16 +28,18 @@
    should be numerical.
 
    Resulting hashmap will be returned with :cluster-id field that identifies the cluster"
-  [data fields]
-  (let [vectors  (map (fn [point]
-                        (with-meta
-                          (into [] (for [field fields] (get point field)))
-                          point))
-                      data)
-        clusters (map :points (cluster vectors 5 200))]
-    (->> clusters
-         (map vector (iterate inc (int 0)))
-         (map (fn [[cluster points]]
-                (map #(assoc (meta %) :cluster-id cluster) points)))
-         ;; mapcat identity?
-         flatten)))
+  ([data fields clusters]
+     (cluster-by data fields clusters 100))
+  ([data fields clusters iterations]
+     (let [vectors  (map (fn [point]
+                           (with-meta
+                             (into [] (for [field fields] (get point field)))
+                             point))
+                         data)
+           clusters (map :points (cluster vectors clusters iterations))]
+       (->> clusters
+            (map vector (iterate inc (int 0)))
+            (map (fn [[cluster points]]
+                   (map #(assoc (meta %) :cluster-id cluster) points)))
+            ;; mapcat identity?
+            flatten))))
