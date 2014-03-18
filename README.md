@@ -1,14 +1,16 @@
-# statistiker
+# Statistiker
 
-A Clojure library designed to ... well, that part is up to you.
-
-## Usage
-
-FIXME
+Statistiker is a simple way to do Statistics in Clojure.
+The goal is to have an implementation of all popular algorithms for mining datasets.
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2014 Alex Petrov & ClojureWerkz Team
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Double licensed under the Eclipse Public License (the same as Clojure) or the Apache Public License 2.0.
+
+## Credits
+
+Development sponsored by [codecentric AG](http://codecentric.de)
+
+![Development Sponsored](https://www.codecentric.de/wp-content/themes/ccHomepage/img/logo-codecentric.png)
