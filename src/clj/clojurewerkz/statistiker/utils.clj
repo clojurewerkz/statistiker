@@ -1,4 +1,5 @@
-(ns clojurewerkz.statistiker.utils)
+(ns clojurewerkz.statistiker.utils
+  (:import [java.util TreeMap]))
 
 (defn- add-unique-id-single
   [a b]
@@ -9,3 +10,7 @@
    is `:unique-id`."
   [coll]
   (map add-unique-id-single coll (iterate inc 0)))
+
+(defn to-sorted-map
+  [m]
+  (TreeMap. m))
