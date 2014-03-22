@@ -1,5 +1,5 @@
 (ns clojurewerkz.statistiker.fast-math
-  (:import [clojurewerkz.statistiker FastMath Precision]))
+  (:import [org.apache.commons.math3.util FastMath Precision]))
 
 (defn exp
   [v]
