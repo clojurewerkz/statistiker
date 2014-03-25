@@ -18,3 +18,13 @@
          (map #(hash-map :points (map (fn [a] (with-meta (vec (.getPoint a))
                                                (.getMetadata a)))
                                       (.getPoints %)))))))
+
+(defn cluster-by
+  "Clusters the hashmaps by fields. Fields should be given as vector. Field values
+   should be numerical.
+
+   Resulting hashmap will be returned with :cluster-id field that identifies the cluster"
+  [data fields eps min-points]
+  (let [vectors  (prepare-vectors fields data)
+        clusters (map :points (cluster vectors eps min-points))]
+    (unmeta-clusters clusters)))

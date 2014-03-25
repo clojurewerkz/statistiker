@@ -1,10 +1,6 @@
 (ns clojurewerkz.statistiker.clustering.kmeans
-  (:import [org.apache.commons.math3.ml.clustering KMeansPlusPlusClusterer]
-           [clojurewerkz.statistiker DoublePointWithMeta]))
-
-(defn double-point
-  [nums]
-  (DoublePointWithMeta. (meta nums) (double-array nums)))
+  (:import [org.apache.commons.math3.ml.clustering KMeansPlusPlusClusterer])
+  (:require [clojurewerkz.statistiker.utils :refer :all]))
 
 (defn- ^KMeansPlusPlusClusterer clusterer
   ([k max-iter]
@@ -28,18 +24,9 @@
    should be numerical.
 
    Resulting hashmap will be returned with :cluster-id field that identifies the cluster"
-  ([data fields clusters]
-     (cluster-by data fields clusters 100))
-  ([data fields clusters iterations]
-     (let [vectors  (map (fn [point]
-                           (with-meta
-                             (into [] (for [field fields] (get point field)))
-                             point))
-                         data)
-           clusters (map :points (cluster vectors clusters iterations))]
-       (->> clusters
-            (map vector (iterate inc (int 0)))
-            (map (fn [[cluster points]]
-                   (map #(assoc (meta %) :cluster-id cluster) points)))
-            ;; mapcat identity?
-            flatten))))
+  ([data fields k]
+     (cluster-by data fields k 100))
+  ([data fields k iterations]
+     (let [vectors (prepare-vectors fields data)
+           clusters (map :points (cluster vectors k iterations))]
+       (unmeta-clusters clusters))))
