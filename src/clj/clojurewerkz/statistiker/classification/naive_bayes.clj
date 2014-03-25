@@ -1,7 +1,8 @@
 (ns clojurewerkz.statistiker.classification.naive-bayes
-  (:require [clojure.core.matrix :refer [transpose]])
-  (:require [clojurewerkz.statistiker.fast-math :refer :all])
-  (:require [clojurewerkz.statistiker.summary :refer :all]))
+  (:require [clojurewerkz.statistiker.fast-math :refer :all]
+            [clojure.core.matrix :refer [transpose]]
+            [clojurewerkz.statistiker.utils :refer :all]
+            [clojurewerkz.statistiker.summary :refer :all]))
 
 (def pi Math/PI)
 
@@ -15,8 +16,19 @@
                 :classification-data (->> v
                                           transpose
                                           (mapv (fn [v]
-                                                  {:mean (mean v)
-                                                   :variance (variance v)})))}]))))
+                                                  (let [var (variance v)]
+                                                    (assert (not (= 0.0 var))
+                                                            (str "Variance of " k " is " var))
+                                                    {:mean (mean v)
+                                                     :variance var}))))}]))))
+
+(defn maps->model
+  [maps label features]
+  (->> maps
+      vec
+      (group-by #(get % label))
+      (map-groups (fn [items] (mapv #(select-keys-order-dependent % features) items)))
+      make-model))
 
 (defn posterior-prob
   "Calculate probability for the single item"
@@ -34,6 +46,7 @@
                 (mapv (fn [point {:keys [mean variance]}]
                         (posterior-prob point variance mean))
                       item)
+                ;; TODO: add probability and confidence
                 (reduce * p))])))
 
 (defn best-match

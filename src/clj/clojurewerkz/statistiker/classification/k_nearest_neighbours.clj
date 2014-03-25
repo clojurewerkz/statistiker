@@ -1,5 +1,6 @@
 (ns clojurewerkz.statistiker.classification.k-nearest-neighbours
-  (:require [clojurewerkz.statistiker.distance :as distance]))
+  (:require [clojurewerkz.statistiker.distance :as distance]
+            [clojurewerkz.statistiker.utils :refer :all]))
 
 (defn make-model
   [data]
@@ -8,6 +9,14 @@
               (mapv #(vector label %) items)))
        (mapcat identity)
        vec))
+
+(defn maps->model
+  [maps label features]
+  (->> maps
+      vec
+      (group-by #(get % label))
+      (map-groups (fn [items] (mapv #(select-keys-order-dependent % features) items)))
+      make-model))
 
 (defn classify
   ([model item k]

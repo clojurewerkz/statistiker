@@ -14,3 +14,13 @@
 (defn to-sorted-map
   [m]
   (TreeMap. m))
+
+(defn map-groups
+  [f groups]
+  (into {}
+        (for [[group-id items] groups]
+          [group-id (f items)])))
+
+(defn select-keys-order-dependent
+  [m keys]
+  (reduce (fn [acc key] (conj acc (get m key))) [] keys))

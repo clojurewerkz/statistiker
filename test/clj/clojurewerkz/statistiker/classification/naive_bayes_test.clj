@@ -18,5 +18,23 @@
   (let [model      (make-model classification-data)
         classified (classify model test-item)
         best-match (best-match classified)]
-    (println (> (second (vals classified)) (first (vals classified))) )
+    (is (> (second (vals classified)) (first (vals classified))) )
+    (is (= :female (first best-match)))))
+
+
+(def classification-data-maps
+  [{:label :male :height 6.0 :weight	180 :foot-size	12}
+   {:label :male :height 5.92 :weight	190 :foot-size	11}
+   {:label :male :height 5.58 :weight 170 :foot-size	12}
+   {:label :male :height 5.92 :weight 165 :foot-size	10}
+   {:label :female :height 5.0 :weight	100 :foot-size	6}
+   {:label :female :height 5.5 :weight	150 :foot-size	8}
+   {:label :female :height 5.42 :weight	130 :foot-size	7}
+   {:label :female :height 5.75 :weight	150 :foot-size	9}])
+
+(deftest test-classify
+  (let [model      (maps->model classification-data-maps :label [:height :weight :foot-size])
+        classified (classify model test-item)
+        best-match (best-match classified)]
+    (is (> (second (vals classified)) (first (vals classified))) )
     (is (= :female (first best-match)))))
