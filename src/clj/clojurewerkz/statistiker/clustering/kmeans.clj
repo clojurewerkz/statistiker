@@ -1,12 +1,13 @@
 (ns clojurewerkz.statistiker.clustering.kmeans
   (:import [org.apache.commons.math3.ml.clustering KMeansPlusPlusClusterer])
-  (:require [clojurewerkz.statistiker.utils :refer :all]))
+  (:require [clojurewerkz.statistiker.utils :refer :all]
+            [clojurewerkz.statistiker.distance :as distance]))
 
 (defn- ^KMeansPlusPlusClusterer clusterer
   ([k max-iter]
      (KMeansPlusPlusClusterer. k max-iter))
   ([k max-iter distance-measure]
-     (KMeansPlusPlusClusterer. k max-iter distance-measure)))
+     (KMeansPlusPlusClusterer. k max-iter (get distance/distance-measure-instances distance-measure))))
 
 (defn cluster
   [initial k max-iter]

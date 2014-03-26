@@ -7,7 +7,7 @@
   ([eps min-points]
      (DBSCANClusterer. eps min-points))
   ([eps min-points distance-measure]
-     (DBSCANClusterer. eps min-points distance-measure)))
+     (DBSCANClusterer. eps min-points (get distance/distance-measure-instances distance-measure))))
 
 (defn cluster
   [initial eps min-points]

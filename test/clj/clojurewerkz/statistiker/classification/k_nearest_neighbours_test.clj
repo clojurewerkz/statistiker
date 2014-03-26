@@ -21,15 +21,15 @@
       (is (= :female (best-match classified)))))
   (testing "cranberra distance"
     (let [model      (make-model classification-data)
-          classified (classify model test-item 5 distance/canberra-distance)]
+          classified (classify model test-item 5 :canberra)]
       (is (= :female (best-match classified)))))
   (testing "chebyshev distance"
     (let [model      (make-model classification-data)
-          classified (classify model test-item 5 distance/chebyshev-distance)]
+          classified (classify model test-item 5 :chebyshev)]
       (is (= :female (best-match classified)))))
   (testing "manhattan distance"
     (let [model      (make-model classification-data)
-          classified (classify model test-item 5 distance/manhattan-distance)]
+          classified (classify model test-item 5 :manhattan)]
       (is (= :female (best-match classified))))))
 
 
@@ -43,7 +43,6 @@
    {:label :female :height 5.42 :weight	130 :foot-size	7}
    {:label :female :height 5.75 :weight	150 :foot-size	9}])
 
-
 (deftest test-classify-maps
   (testing "eucledian distance"
     (let [model      (maps->model classification-data-maps :label [:height :weight :foot-size])
@@ -51,13 +50,13 @@
       (is (= :female (best-match classified)))))
   (testing "cranberra distance"
     (let [model      (maps->model classification-data-maps :label [:height :weight :foot-size])
-          classified (classify model test-item 5 distance/canberra-distance)]
+          classified (classify model test-item 5 :canberra)]
       (is (= :female (best-match classified)))))
   (testing "chebyshev distance"
     (let [model      (maps->model classification-data-maps :label [:height :weight :foot-size])
-          classified (classify model test-item 5 distance/chebyshev-distance)]
+          classified (classify model test-item 5 :chebyshev)]
       (is (= :female (best-match classified)))))
   (testing "manhattan distance"
     (let [model      (maps->model classification-data-maps :label [:height :weight :foot-size])
-          classified (classify model test-item 5 distance/manhattan-distance)]
+          classified (classify model test-item 5 :manhattan)]
       (is (= :female (best-match classified))))))

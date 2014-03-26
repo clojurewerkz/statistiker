@@ -20,10 +20,10 @@
 
 (defn classify
   ([model item k]
-     (classify model item k distance/euclidean-distance))
-  ([model item k distance-fn]
+     (classify model item k :euclidean))
+  ([model item k distance-measure]
      (->> model
-          (map (fn [[label model-item]] [label (distance-fn item model-item)]))
+          (map (fn [[label model-item]] [label ((get distance/distance-measure-fns distance-measure) item model-item)]))
           (sort-by second)
           (take k))))
 
