@@ -429,11 +429,10 @@ public class SVM {
       int begin = i * prob.length / nr_fold;
       int end = (i + 1) * prob.length / nr_fold;
       int j, k;
-      SvmProblem subprob = new SvmProblem();
 
-      subprob.length = prob.length - (end - begin);
-      subprob.datapoints = new SvmNode[subprob.length][];
-      subprob.labels = new double[subprob.length];
+      int subprobLength = prob.length - (end - begin);
+      SvmProblem subprob = new SvmProblem(new double[subprobLength],
+                                          new SvmNode[subprobLength][]);
 
       k = 0;
       for (j = 0; j < begin; j++) {
@@ -668,12 +667,13 @@ public class SVM {
       int p = 0;
       for (i = 0; i < nr_class; i++)
         for (int j = i + 1; j < nr_class; j++) {
-          SvmProblem sub_prob = new SvmProblem();
           int si = start[i], sj = start[j];
           int ci = count[i], cj = count[j];
-          sub_prob.length = ci + cj;
-          sub_prob.datapoints = new SvmNode[sub_prob.length][];
-          sub_prob.labels = new double[sub_prob.length];
+          int subprobLengh = ci + cj;
+
+          SvmProblem sub_prob = new SvmProblem(new double[subprobLengh],
+                                               new SvmNode[subprobLengh][]);
+
           int k;
           for (k = 0; k < ci; k++) {
             sub_prob.datapoints[k] = x[si + k];
@@ -858,11 +858,10 @@ public class SVM {
       int begin = fold_start[i];
       int end = fold_start[i + 1];
       int j, k;
-      SvmProblem subprob = new SvmProblem();
 
-      subprob.length = l - (end - begin);
-      subprob.datapoints = new SvmNode[subprob.length][];
-      subprob.labels = new double[subprob.length];
+      int subprobLength = l - (end - begin);
+      SvmProblem subprob = new SvmProblem(new double[subprobLength],
+                                          new SvmNode[subprobLength][]);
 
       k = 0;
       for (j = 0; j < begin; j++) {
@@ -1162,9 +1161,8 @@ public class SVM {
       return 0;
   }
 
-  public static void info(String s)
-  {
-    System.out.println(s);
+  public static void info(String s) {
+    // System.out.println(s);
   }
 
 }
