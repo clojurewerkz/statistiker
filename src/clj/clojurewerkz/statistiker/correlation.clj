@@ -1,6 +1,7 @@
 (ns clojurewerkz.statistiker.correlation
   (:import [org.apache.commons.math3.stat.correlation PearsonsCorrelation])
   (:require [clojure.math.combinatorics :as combo]
+            [clojurewerkz.statistiker.transform.fft :as fft]
             [clojurewerkz.statistiker.summary :refer :all]
             [clojurewerkz.statistiker.descriptive :refer :all]))
 
