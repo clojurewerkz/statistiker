@@ -16,5 +16,5 @@
            360, 342, 406, 396, 420, 472, 548, 559, 463, 407, 362, 405,
            417, 391, 419, 461, 472, 535, 622, 606, 508, 461, 390, 432])
 
-(deftest transform-test
-  (doall (map println (sort-by :abs > (take 64 (transform (take 128 data) :forward :standard))))))
+;;(deftest transform-test
+;;  (doall (map println (sort-by :abs > (take 64 (transform (take 128 data) :forward :standard))))))

@@ -1,5 +1,6 @@
 package clojurewerkz.statistiker.libsvm.kernel;
 
+import clojurewerkz.statistiker.libsvm.data.KernelType;
 import clojurewerkz.statistiker.libsvm.data.QMatrix;
 import clojurewerkz.statistiker.libsvm.data.SvmNode;
 import clojurewerkz.statistiker.libsvm.data.SvmParameter;
@@ -40,15 +41,15 @@ public abstract class Kernel extends QMatrix {
 
   double kernel_function(int i, int j) {
     switch (kernel_type) {
-      case SvmParameter.LINEAR:
+      case KernelType.LINEAR:
         return dot(x[i], x[j]);
-      case SvmParameter.POLY:
+      case KernelType.POLY:
         return powi(gamma * dot(x[i], x[j]) + coef0, degree);
-      case SvmParameter.RBF:
+      case KernelType.RBF:
         return Math.exp(-gamma * (x_square[i] + x_square[j] - 2 * dot(x[i], x[j])));
-      case SvmParameter.SIGMOID:
+      case KernelType.SIGMOID:
         return Math.tanh(gamma * dot(x[i], x[j]) + coef0);
-      case SvmParameter.PRECOMPUTED:
+      case KernelType.PRECOMPUTED:
         return x[i][(int) (x[j][0].value)].value;
       default:
         return 0;  // java
@@ -63,7 +64,7 @@ public abstract class Kernel extends QMatrix {
 
     x = (SvmNode[][]) x_.clone();
 
-    if (kernel_type == SvmParameter.RBF) {
+    if (kernel_type == KernelType.RBF) {
       x_square = new double[l];
       for (int i = 0; i < l; i++)
         x_square[i] = dot(x[i], x[i]);
@@ -92,11 +93,11 @@ public abstract class Kernel extends QMatrix {
   public static double k_function(SvmNode[] x, SvmNode[] y,
                            SvmParameter param) {
     switch (param.kernel_type) {
-      case SvmParameter.LINEAR:
+      case KernelType.LINEAR:
         return dot(x, y);
-      case SvmParameter.POLY:
+      case KernelType.POLY:
         return powi(param.gamma * dot(x, y) + param.coef0, param.degree);
-      case SvmParameter.RBF: {
+      case KernelType.RBF: {
         double sum = 0;
         int xlen = x.length;
         int ylen = y.length;
@@ -127,9 +128,9 @@ public abstract class Kernel extends QMatrix {
 
         return Math.exp(-param.gamma * sum);
       }
-      case SvmParameter.SIGMOID:
+      case KernelType.SIGMOID:
         return Math.tanh(param.gamma * dot(x, y) + param.coef0);
-      case SvmParameter.PRECOMPUTED:
+      case KernelType.PRECOMPUTED:
         return x[(int) (y[0].value)].value;
       default:
         return 0;  // java

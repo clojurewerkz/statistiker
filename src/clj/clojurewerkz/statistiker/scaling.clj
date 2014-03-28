@@ -9,8 +9,7 @@
         scale-fn (fn [x] (double (/ (- x xmin) (- xmax xmin))))]
     (mapv scale-fn x)))
 
-(defn z-transform
-  "Z-Transformation"
+(defn standartise
   [x]
   (let [xmean    (summary/mean x)
         xsd      (summary/sd x)

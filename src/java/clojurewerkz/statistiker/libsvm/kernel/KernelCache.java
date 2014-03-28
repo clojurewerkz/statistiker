@@ -1,7 +1,7 @@
 package clojurewerkz.statistiker.libsvm.kernel;
 
 //
-// Kernel KernelCache
+// KernelType KernelCache
 //
 // length is the number of total data items
 // size is the cache size limit in bytes

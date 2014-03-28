@@ -17,6 +17,8 @@
   [values]
   (sqrt (variance values)))
 
+(def sd standard-deviation)
+
 (defn geometric-mean
   [values]
   (pow (reduce * values) (/ 1 (count values))))

@@ -12,4 +12,5 @@ public class SvmProblem implements java.io.Serializable {
     this.labels = labels;
     this.length = labels.length;
   }
+
 }

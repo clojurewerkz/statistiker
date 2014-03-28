@@ -31,7 +31,6 @@
            360, 342, 406, 396, 420, 472, 548, 559, 463, 407, 362, 405,
            417, 391, 419, 461, 472, 535, 622, 606, 508, 461, 390, 432]
         pattern-stats (best-repetition-patterns v pearsons-correlation)]
-    (println pattern-stats)
     (is (= 12 (ffirst pattern-stats)))))
 
 (deftest detrend-test

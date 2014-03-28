@@ -1,10 +1,7 @@
 package clojurewerkz.statistiker.libsvm;
 
 
-import clojurewerkz.statistiker.libsvm.data.SvmModel;
-import clojurewerkz.statistiker.libsvm.data.SvmNode;
-import clojurewerkz.statistiker.libsvm.data.SvmParameter;
-import clojurewerkz.statistiker.libsvm.data.SvmProblem;
+import clojurewerkz.statistiker.libsvm.data.*;
 import clojurewerkz.statistiker.libsvm.kernel.Kernel;
 import clojurewerkz.statistiker.libsvm.kernel.OneClassQ;
 import clojurewerkz.statistiker.libsvm.kernel.SvcQ;
@@ -189,27 +186,24 @@ public class SVM {
     double rho;
   }
 
-  ;
-
-  static decision_function svm_train_one(
-                                                SvmProblem prob, SvmParameter param,
-                                                double Cp, double Cn) {
+  static decision_function svm_train_one(SvmProblem prob, SvmParameter param,
+                                        double Cp, double Cn) {
     double[] alpha = new double[prob.length];
     Solver.SolutionInfo si = new Solver.SolutionInfo();
     switch (param.svm_type) {
-      case SvmParameter.C_SVC:
+      case SvmType.C_SVC:
         solve_c_svc(prob, param, alpha, si, Cp, Cn);
         break;
-      case SvmParameter.NU_SVC:
+      case SvmType.NU_SVC:
         solve_nu_svc(prob, param, alpha, si);
         break;
-      case SvmParameter.ONE_CLASS:
+      case SvmType.ONE_CLASS:
         solve_one_class(prob, param, alpha, si);
         break;
-      case SvmParameter.EPSILON_SVR:
+      case SvmType.EPSILON_SVR:
         solve_epsilon_svr(prob, param, alpha, si);
         break;
-      case SvmParameter.NU_SVR:
+      case SvmType.NU_SVR:
         solve_nu_svr(prob, param, alpha, si);
         break;
     }
@@ -575,9 +569,9 @@ public class SVM {
     SvmModel model = new SvmModel();
     model.param = param;
 
-    if (param.svm_type == SvmParameter.ONE_CLASS ||
-                param.svm_type == SvmParameter.EPSILON_SVR ||
-                param.svm_type == SvmParameter.NU_SVR) {
+    if (param.svm_type == SvmType.ONE_CLASS ||
+                param.svm_type == SvmType.EPSILON_SVR ||
+                param.svm_type == SvmType.NU_SVR) {
       // regression or one-class-SVM
       model.nr_class = 2;
       model.label = null;
@@ -587,8 +581,8 @@ public class SVM {
       model.sv_coef = new double[1][];
 
       if (param.probability == 1 &&
-                  (param.svm_type == SvmParameter.EPSILON_SVR ||
-                           param.svm_type == SvmParameter.NU_SVR)) {
+                  (param.svm_type == SvmType.EPSILON_SVR ||
+                           param.svm_type == SvmType.NU_SVR)) {
         model.probA = new double[1];
         model.probA[0] = svm_svr_probability(prob, param);
       }
@@ -792,8 +786,8 @@ public class SVM {
 
     // stratified cv may not give leave-one-out rate
     // Each class to length folds -> some folds may have zero elements
-    if ((param.svm_type == SvmParameter.C_SVC ||
-                 param.svm_type == SvmParameter.NU_SVC) && nr_fold < l) {
+    if ((param.svm_type == SvmType.C_SVC ||
+                 param.svm_type == SvmType.NU_SVC) && nr_fold < l) {
       int[] tmp_nr_class = new int[1];
       int[][] tmp_label = new int[1][];
       int[][] tmp_start = new int[1][];
@@ -876,8 +870,8 @@ public class SVM {
       }
       SvmModel submodel = svm_train(subprob, param);
       if (param.probability == 1 &&
-                  (param.svm_type == SvmParameter.C_SVC ||
-                           param.svm_type == SvmParameter.NU_SVC)) {
+                  (param.svm_type == SvmType.C_SVC ||
+                           param.svm_type == SvmType.NU_SVC)) {
         double[] prob_estimates = new double[svm_get_nr_class(submodel)];
         for (j = begin; j < end; j++)
           target[perm[j]] = svm_predict_probability(submodel, prob.datapoints[perm[j]], prob_estimates);
@@ -902,7 +896,7 @@ public class SVM {
   }
 
   public static double svm_get_svr_probability(SvmModel model) {
-    if ((model.param.svm_type == SvmParameter.EPSILON_SVR || model.param.svm_type == SvmParameter.NU_SVR) &&
+    if ((model.param.svm_type == SvmType.EPSILON_SVR || model.param.svm_type == SvmType.NU_SVR) &&
                 model.probA != null)
       return model.probA[0];
     else {
@@ -913,9 +907,9 @@ public class SVM {
 
   public static double svm_predict_values(SvmModel model, SvmNode[] x, double[] dec_values) {
     int i;
-    if (model.param.svm_type == SvmParameter.ONE_CLASS ||
-                model.param.svm_type == SvmParameter.EPSILON_SVR ||
-                model.param.svm_type == SvmParameter.NU_SVR) {
+    if (model.param.svm_type == SvmType.ONE_CLASS ||
+                model.param.svm_type == SvmType.EPSILON_SVR ||
+                model.param.svm_type == SvmType.NU_SVR) {
       double[] sv_coef = model.sv_coef[0];
       double sum = 0;
       for (i = 0; i < model.l; i++)
@@ -923,7 +917,7 @@ public class SVM {
       sum -= model.rho[0];
       dec_values[0] = sum;
 
-      if (model.param.svm_type == SvmParameter.ONE_CLASS)
+      if (model.param.svm_type == SvmType.ONE_CLASS)
         return (sum > 0) ? 1 : -1;
       else
         return sum;
@@ -982,9 +976,9 @@ public class SVM {
   public static double svm_predict(SvmModel model, SvmNode[] x) {
     int nr_class = model.nr_class;
     double[] dec_values;
-    if (model.param.svm_type == SvmParameter.ONE_CLASS ||
-                model.param.svm_type == SvmParameter.EPSILON_SVR ||
-                model.param.svm_type == SvmParameter.NU_SVR)
+    if (model.param.svm_type == SvmType.ONE_CLASS ||
+                model.param.svm_type == SvmType.EPSILON_SVR ||
+                model.param.svm_type == SvmType.NU_SVR)
       dec_values = new double[1];
     else
       dec_values = new double[nr_class * (nr_class - 1) / 2];
@@ -993,7 +987,7 @@ public class SVM {
   }
 
   public static double svm_predict_probability(SvmModel model, SvmNode[] x, double[] prob_estimates) {
-    if ((model.param.svm_type == SvmParameter.C_SVC || model.param.svm_type == SvmParameter.NU_SVC) &&
+    if ((model.param.svm_type == SvmType.C_SVC || model.param.svm_type == SvmType.NU_SVC) &&
                 model.probA != null && model.probB != null) {
       int i;
       int nr_class = model.nr_class;
@@ -1043,21 +1037,21 @@ public class SVM {
     // svm_type
 
     int svm_type = param.svm_type;
-    if (svm_type != SvmParameter.C_SVC &&
-                svm_type != SvmParameter.NU_SVC &&
-                svm_type != SvmParameter.ONE_CLASS &&
-                svm_type != SvmParameter.EPSILON_SVR &&
-                svm_type != SvmParameter.NU_SVR)
+    if (svm_type != SvmType.C_SVC &&
+                svm_type != SvmType.NU_SVC &&
+                svm_type != SvmType.ONE_CLASS &&
+                svm_type != SvmType.EPSILON_SVR &&
+                svm_type != SvmType.NU_SVR)
       return "unknown SVM type";
 
     // kernel_type, degree
 
     int kernel_type = param.kernel_type;
-    if (kernel_type != SvmParameter.LINEAR &&
-                kernel_type != SvmParameter.POLY &&
-                kernel_type != SvmParameter.RBF &&
-                kernel_type != SvmParameter.SIGMOID &&
-                kernel_type != SvmParameter.PRECOMPUTED)
+    if (kernel_type != KernelType.LINEAR &&
+                kernel_type != KernelType.POLY &&
+                kernel_type != KernelType.RBF &&
+                kernel_type != KernelType.SIGMOID &&
+                kernel_type != KernelType.PRECOMPUTED)
       return "unknown kernel type";
 
     if (param.gamma < 0)
@@ -1074,19 +1068,19 @@ public class SVM {
     if (param.eps <= 0)
       return "eps <= 0";
 
-    if (svm_type == SvmParameter.C_SVC ||
-                svm_type == SvmParameter.EPSILON_SVR ||
-                svm_type == SvmParameter.NU_SVR)
+    if (svm_type == SvmType.C_SVC ||
+                svm_type == SvmType.EPSILON_SVR ||
+                svm_type == SvmType.NU_SVR)
       if (param.C <= 0)
         return "C <= 0";
 
-    if (svm_type == SvmParameter.NU_SVC ||
-                svm_type == SvmParameter.ONE_CLASS ||
-                svm_type == SvmParameter.NU_SVR)
+    if (svm_type == SvmType.NU_SVC ||
+                svm_type == SvmType.ONE_CLASS ||
+                svm_type == SvmType.NU_SVR)
       if (param.nu <= 0 || param.nu > 1)
         return "nu <= 0 or nu > 1";
 
-    if (svm_type == SvmParameter.EPSILON_SVR)
+    if (svm_type == SvmType.EPSILON_SVR)
       if (param.p < 0)
         return "p < 0";
 
@@ -1099,12 +1093,12 @@ public class SVM {
       return "probability != 0 and probability != 1";
 
     if (param.probability == 1 &&
-                svm_type == SvmParameter.ONE_CLASS)
+                svm_type == SvmType.ONE_CLASS)
       return "one-class SVM probability output not supported yet";
 
     // check whether nu-svc is feasible
 
-    if (svm_type == SvmParameter.NU_SVC) {
+    if (svm_type == SvmType.NU_SVC) {
       int l = prob.length;
       int max_nr_class = 16;
       int nr_class = 0;
@@ -1152,9 +1146,9 @@ public class SVM {
   }
 
   public static int svm_check_probability_model(SvmModel model) {
-    if (((model.param.svm_type == SvmParameter.C_SVC || model.param.svm_type == SvmParameter.NU_SVC) &&
+    if (((model.param.svm_type == SvmType.C_SVC || model.param.svm_type == SvmType.NU_SVC) &&
                  model.probA != null && model.probB != null) ||
-                ((model.param.svm_type == SvmParameter.EPSILON_SVR || model.param.svm_type == SvmParameter.NU_SVR) &&
+                ((model.param.svm_type == SvmType.EPSILON_SVR || model.param.svm_type == SvmType.NU_SVR) &&
                          model.probA != null))
       return 1;
     else

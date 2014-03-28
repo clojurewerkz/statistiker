@@ -1,20 +1,20 @@
 (ns clojurewerkz.statistiker.classification.svm
-  (:import [clojurewerkz.statistiker.libsvm.data SvmProblem SvmNode SvmParameter]
+  (:import [clojurewerkz.statistiker.libsvm.data SvmProblem SvmNode SvmParameter KernelType SvmType]
            [clojurewerkz.statistiker.libsvm SVM]))
 
 (def kernel-types
-  {:linear       SvmParameter/LINEAR
-   :poly         SvmParameter/POLY
-   :pre-computed SvmParameter/PRECOMPUTED
-   :rbf          SvmParameter/RBF
-   :sigmoid      SvmParameter/SIGMOID})
+  {:linear       KernelType/LINEAR
+   :poly         KernelType/POLY
+   :pre-computed KernelType/PRECOMPUTED
+   :rbf          KernelType/RBF
+   :sigmoid      KernelType/SIGMOID})
 
 (def svm-types
-  {:c-svc       SvmParameter/C_SVC
-   :epsilon-svr SvmParameter/EPSILON_SVR
-   :nu-svc      SvmParameter/NU_SVC
-   :nu-svr      SvmParameter/NU_SVR
-   :one-class   SvmParameter/ONE_CLASS})
+  {:c-svc       SvmType/C_SVC
+   :epsilon-svr SvmType/EPSILON_SVR
+   :nu-svc      SvmType/NU_SVC
+   :nu-svr      SvmType/NU_SVR
+   :one-class   SvmType/ONE_CLASS})
 
 (def default-params
   {:C            1

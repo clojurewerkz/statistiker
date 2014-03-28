@@ -1,10 +1,10 @@
 package clojurewerkz.statistiker.libsvm.data;
 
 //
-// Kernel evaluation
+// KernelType evaluation
 //
 // the static method k_function is for doing single kernel evaluation
-// the constructor of Kernel prepares to calculate the length*length kernel matrix
+// the constructor of KernelType prepares to calculate the length*length kernel matrix
 // the member function get_Q is for getting one column from the Q Matrix
 //
 public abstract class QMatrix {
