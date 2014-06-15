@@ -1,8 +1,8 @@
 (ns clojurewerkz.statistiker.correlation
   (:import [org.apache.commons.math3.stat.correlation PearsonsCorrelation])
-  (:require [clojure.math.combinatorics :as combo]
+  (:require [clojure.math.combinatorics             :as combo]
             [clojurewerkz.statistiker.transform.fft :as fft]
-            [clojurewerkz.statistiker.statistics :refer :all]
+            [clojurewerkz.statistiker.statistics    :as s]
             ))
 
 (defn pearsons-correlation
@@ -12,14 +12,13 @@
 
 (defn best-repetition-patterns
   [v correlation]
-  (let [preprocessed (for [i (range 2 (inc (/ (count v) 2)))]
-                       (let [partitions   (partition i v)
-                             combinations (combo/combinations partitions 2)]
-                         [i (mean (map (fn [[v1 v2]] (pearsons-correlation v1 v2)) combinations))]))]
-    (->> preprocessed
-         (remove #(.isNaN (last %)))
-         (remove #(> 0 (last %)))
-         (sort-by last >))))
+  (->> (for [i (range 2 (inc (/ (count v) 2)))]
+         (let [partitions   (partition i v)
+               combinations (combo/combinations partitions 2)]
+           [i (s/mean (map (fn [[v1 v2]] (pearsons-correlation v1 v2)) combinations))]))
+
+       (remove #(or (.isNaN (last %)) (> 0 (last %))))
+       (sort-by last >)))
 
 (defn detrend
   [v cycle]

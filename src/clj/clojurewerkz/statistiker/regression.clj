@@ -1,6 +1,5 @@
 (ns clojurewerkz.statistiker.regression
-  (:import [org.apache.commons.math3.stat.regression SimpleRegression])
-  (:require [clojurewerkz.statistiker.fast-math :refer :all]))
+  (:import [org.apache.commons.math3.stat.regression SimpleRegression]))
 
 (defn linear-regression
   "Performs a linear regression"

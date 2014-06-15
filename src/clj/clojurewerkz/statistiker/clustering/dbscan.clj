@@ -1,7 +1,8 @@
 (ns clojurewerkz.statistiker.clustering.dbscan
   (:import [org.apache.commons.math3.ml.clustering DBSCANClusterer])
   (:require [clojurewerkz.statistiker.distance :as distance]
-            [clojurewerkz.statistiker.utils :refer :all]))
+            [clojurewerkz.statistiker.utils    :as u]
+            ))
 
 (defn- ^DBSCANClusterer clusterer
   ([eps min-points]
@@ -13,7 +14,7 @@
   [initial eps min-points]
   (let [clusterer (clusterer eps min-points)]
     (->> initial
-         (map double-point)
+         (map u/double-point)
          (.cluster clusterer)
          (map #(hash-map :points (map (fn [a] (with-meta (vec (.getPoint a))
                                                (.getMetadata a)))
@@ -25,6 +26,6 @@
 
    Resulting hashmap will be returned with :cluster-id field that identifies the cluster"
   [data fields eps min-points]
-  (let [vectors  (prepare-vectors fields data)
+  (let [vectors  (u/prepare-vectors fields data)
         clusters (map :points (cluster vectors eps min-points))]
-    (unmeta-clusters clusters)))
+    (u/unmeta-clusters clusters)))

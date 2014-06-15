@@ -1,6 +1,6 @@
 (ns clojurewerkz.statistiker.classification.k-nearest-neighbours
   (:require [clojurewerkz.statistiker.distance :as distance]
-            [clojurewerkz.statistiker.utils :refer :all]))
+            [clojurewerkz.statistiker.utils :refer [map-groups select-keys-order-dependent]]))
 
 (defn make-model
   [data]

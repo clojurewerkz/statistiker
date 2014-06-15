@@ -1,6 +1,6 @@
 (ns clojurewerkz.statistiker.statistics
   (:import [org.apache.commons.math3.stat.descriptive.rank Percentile])
-  (:require [clojurewerkz.statistiker.fast-math :refer :all]))
+  (:require [clojurewerkz.statistiker.fast-math :refer [sqrt pow]]))
 
 (defn mean
   [values]

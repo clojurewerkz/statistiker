@@ -1,6 +1,5 @@
 (ns clojurewerkz.statistiker.time-series.smoothing
-  (:require [clojurewerkz.statistiker.statistics :refer :all])
-  )
+  (:require [clojurewerkz.statistiker.statistics :as s]))
 
 (defn fixed-size-conj
   [size]
@@ -18,22 +17,22 @@
        (fn [i]
          (swap! window conj-fn i)
          (when (= (count @window) size)
-           (consume-fn (mean @window))))))
+           (consume-fn (s/mean @window))))))
   ([size consume-fn field]
      (let [conj-fn (fixed-size-conj size)
            window  (atom [])]
        (fn [i]
          (swap! window conj-fn (get i field))
          (when (= (count @window) size)
-           (consume-fn (assoc i field (mean @window))))))))
+           (consume-fn (assoc i field (s/mean @window))))))))
 
 (defn linear-smooth-seq
   ([window lst]
-     (map mean (partition window 1 lst)))
+     (map s/mean (partition window 1 lst)))
   ;; swap lst and field
   ([window lst field]
      (map (fn [items]
             (let [v (map #(get % field) items)
-                  m (mean v)]
+                  m (s/mean v)]
               (assoc (last items) field m)))
           (partition window 1 lst))))
