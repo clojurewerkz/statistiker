@@ -1,5 +1,6 @@
 (ns clojurewerkz.statistiker.statistics
-  (:import [org.apache.commons.math3.stat.descriptive.rank Percentile])
+  (:import [org.apache.commons.math3.stat.descriptive.rank Percentile]
+           [org.apache.commons.math3.stat StatUtils])
   (:require [clojurewerkz.statistiker.fast-math :refer [sqrt pow]]))
 
 (defn mean
@@ -25,8 +26,19 @@
 
 (defn geometric-mean
   [values]
-  (pow (reduce * values) (/ 1 (count values))))
+  (StatUtils/geometricMean (double-array values)))
 
+(defn mode
+  [values]
+  (vec (StatUtils/mode (double-array values))))
+
+(defn normalize
+  [values]
+  (vec (StatUtils/normalize (double-array values))))
+
+(defn product
+  [values]
+  (StatUtils/product (double-array values)))
 
 (def ^:private percentile-mappings
   {:min    1
@@ -60,12 +72,12 @@
 
 (defn percentiles
   [values percentiles]
-  (let [p              (Percentile.)
-        _              (.setData p (double-array values))]
+  (let [p (Percentile.)
+        _ (.setData p (double-array values))]
     (mapv #(.evaluate p (double %)) percentiles)))
 
 (defn percentile
   [values percentile]
-  (let [p              (Percentile.)
-        _              (.setData p (double-array values))]
+  (let [p (Percentile.)
+        _ (.setData p (double-array values))]
     (.evaluate p (double percentile))))
