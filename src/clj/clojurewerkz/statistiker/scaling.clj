@@ -1,5 +1,5 @@
 (ns clojurewerkz.statistiker.scaling
-  (:require [clojurewerkz.statistiker.summary :as summary]))
+  (:require [clojurewerkz.statistiker.statistics :only [mean sd]]))
 
 (defn rescale
   "Linear transformation"
@@ -11,7 +11,7 @@
 
 (defn standartise
   [x]
-  (let [xmean    (summary/mean x)
-        xsd      (summary/sd x)
+  (let [xmean    (mean x)
+        xsd      (sd x)
         scale-fn (fn [x] (double (/ (- x xmean) xsd)))]
     (map scale-fn x)))

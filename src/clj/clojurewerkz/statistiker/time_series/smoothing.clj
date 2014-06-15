@@ -1,5 +1,6 @@
 (ns clojurewerkz.statistiker.time-series.smoothing
-  (:require [clojurewerkz.statistiker.summary :refer :all]))
+  (:require [clojurewerkz.statistiker.statistics :refer :all])
+  )
 
 (defn fixed-size-conj
   [size]

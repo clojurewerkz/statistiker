@@ -1,8 +1,8 @@
 (ns clojurewerkz.statistiker.classification.naive-bayes
-  (:require [clojurewerkz.statistiker.fast-math :refer :all]
-            [clojure.core.matrix :refer [transpose]]
-            [clojurewerkz.statistiker.utils :refer :all]
-            [clojurewerkz.statistiker.summary :refer :all]))
+  (:require [clojurewerkz.statistiker.fast-math  :refer :all]
+            [clojure.core.matrix                 :refer [transpose]]
+            [clojurewerkz.statistiker.utils      :refer :all]
+            [clojurewerkz.statistiker.statistics :refer :all]))
 
 (def pi Math/PI)
 

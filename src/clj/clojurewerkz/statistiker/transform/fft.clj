@@ -38,14 +38,4 @@
     (map (fn [complex idx]
            {:real (.getReal complex) :imaginary (.getImaginary complex) :abs (.abs complex) :idx idx})
          (.transform transformer (double-array (map double data)) (get transform-types transform-type))
-         (iterate inc 0)
-         )))
-
-
-;; -    v--;
-;; -    v |= v >> 1;
-;; -    v |= v >> 2;
-;; -    v |= v >> 4;
-;; -    v |= v >> 8;
-;; -    v |= v >> 16;
-;; -    v++;
+         (iterate inc 0))))

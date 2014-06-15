@@ -1,6 +1,32 @@
-(ns clojurewerkz.statistiker.descriptive
+(ns clojurewerkz.statistiker.statistics
   (:import [org.apache.commons.math3.stat.descriptive.rank Percentile])
   (:require [clojurewerkz.statistiker.fast-math :refer :all]))
+
+(defn mean
+  [values]
+  (let [c (count values)]
+    (if (> c 0)
+      (float (/ (reduce + values) (count values)))
+      0)))
+
+(defn variance
+  [values]
+  (let [m (mean values)]
+    (/ (->> values
+            (map #(pow (- % m) 2))
+            (reduce +))
+       (- (count values) 1))))
+
+(defn standard-deviation
+  [values]
+  (sqrt (variance values)))
+
+(def sd standard-deviation)
+
+(defn geometric-mean
+  [values]
+  (pow (reduce * values) (/ 1 (count values))))
+
 
 (def percentiles
   {:min 1

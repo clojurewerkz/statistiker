@@ -14,9 +14,11 @@
     </license>
   </licenses>
   <scm>
-    <tag>HEAD
+    <connection>scm:git:git://github.com/clojurewerkz/statistiker.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/clojurewerkz/statistiker.git</developerConnection>
+    <tag>4b592ed76673e07a025ffff5c02204a72bd38b83
 </tag>
-    <url/>
+    <url>https://github.com/clojurewerkz/statistiker</url>
   </scm>
   <build>
     <sourceDirectory>src/clj</sourceDirectory>
@@ -87,9 +89,24 @@
       <version>1.5.1</version>
     </dependency>
     <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>math.combinatorics</artifactId>
+      <version>0.0.7</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
       <version>3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.mikera</groupId>
+      <artifactId>core.matrix</artifactId>
+      <version>0.20.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jblas</groupId>
+      <artifactId>jblas</artifactId>
+      <version>1.2.3</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>

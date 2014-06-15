@@ -2,8 +2,8 @@
   (:import [org.apache.commons.math3.stat.correlation PearsonsCorrelation])
   (:require [clojure.math.combinatorics :as combo]
             [clojurewerkz.statistiker.transform.fft :as fft]
-            [clojurewerkz.statistiker.summary :refer :all]
-            [clojurewerkz.statistiker.descriptive :refer :all]))
+            [clojurewerkz.statistiker.statistics :refer :all]
+            ))
 
 (defn pearsons-correlation
   [v1 v2]
