@@ -1,5 +1,5 @@
 (ns clojurewerkz.statistiker.scaling
-  (:require [clojurewerkz.statistiker.statistics :only [mean sd]]))
+  (:require [clojurewerkz.statistiker.statistics :refer [mean sd]]))
 
 (defn rescale
   "Linear transformation"

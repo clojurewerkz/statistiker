@@ -28,12 +28,12 @@
   (pow (reduce * values) (/ 1 (count values))))
 
 
-(def percentiles
-  {:min 1
-   :max 100
+(def ^:private percentile-mappings
+  {:min    1
+   :max    100
    :median 50
-   :25 25
-   :75 75})
+   :25     25
+   :75     75})
 
 (defn fivenum
   [values]
@@ -42,7 +42,7 @@
     (reduce (fn [acc [k v]]
               (assoc acc k (.evaluate p (double v))))
             {}
-            percentiles)))
+            percentile-mappings)))
 
 (defn iqr
   [values]

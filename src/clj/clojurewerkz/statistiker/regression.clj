@@ -4,7 +4,7 @@
 (defn linear-regression
   "Performs a linear regression"
   ([data]
-     (linear-regression first second))
+     (linear-regression data first second))
   ([data field1-extractor field2-extractor]
      (let [regression (SimpleRegression. true)
            matrix     (into-array (map double-array (map vector

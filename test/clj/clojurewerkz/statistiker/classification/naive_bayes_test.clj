@@ -32,7 +32,7 @@
    {:label :female :height 5.42 :weight	130 :foot-size	7}
    {:label :female :height 5.75 :weight	150 :foot-size	9}])
 
-(deftest test-classify
+(deftest test-classify-2
   (let [model      (maps->model classification-data-maps :label [:height :weight :foot-size])
         classified (classify model test-item)
         best-match (best-match classified)]
