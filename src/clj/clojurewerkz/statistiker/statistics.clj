@@ -12,11 +12,7 @@
 
 (defn variance
   [values]
-  (let [m (mean values)]
-    (/ (->> values
-            (map #(pow (- % m) 2))
-            (reduce +))
-       (- (count values) 1))))
+  (StatUtils/variance (double-array values)))
 
 (defn standard-deviation
   [values]
