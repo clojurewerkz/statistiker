@@ -9,6 +9,10 @@
   [v power]
   (FastMath/pow (double v) power))
 
+(defn sqr
+  [v]
+  (FastMath/pow (double v) 2))
+
 (defn sqrt
   [v]
   (FastMath/sqrt v))
