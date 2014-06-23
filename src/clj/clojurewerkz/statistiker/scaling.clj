@@ -68,7 +68,6 @@
   [maps key scale-fn-factory]
   (let [extracted (map #(get % key) maps)
         scale-f   (scale-fn-factory extracted)
-        scaled    (map scale-f extracted)
-        ]
+        scaled    (map scale-f extracted)]
     (map (fn [v scaled]
            (assoc v key scaled)) maps scaled)))
