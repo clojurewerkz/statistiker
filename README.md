@@ -58,7 +58,6 @@ Development supported by [codecentric AG](http://codecentric.de)
 
 LibSVM sources belong to their respected owners, except for the changes our team made to the source code.
 
-Library contains several public datasets, added to provide best available examples for the users to start
-exploring some commonly known data. Datasets belong to their respective owners, specified in datasets 
-descriptions. Public datasets are same as in Python `scikit-learn`, whose authors accumulated a good 
-collection of resources and made them even better known.
+The project repository contains several public datasets, added to provide best available examples for
+the users to start exploring the project with realistic data. The Data sets belong to their respective owners,
+specified in the description. The data sets are same as in Python's `scikit-learn`.
