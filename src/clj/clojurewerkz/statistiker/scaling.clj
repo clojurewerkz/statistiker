@@ -65,9 +65,11 @@
   (mapv (make-l2-normalize-fn x) x))
 
 (defn scale-feature
-  [maps key scale-fn-factory]
-  (let [extracted (map #(get % key) maps)
-        scale-f   (scale-fn-factory extracted)
-        scaled    (map scale-f extracted)]
-    (map (fn [v scaled]
-           (assoc v key scaled)) maps scaled)))
+  ([maps key scaled-key scale-fn-factory]
+     (let [extracted (map #(get % key) maps)
+           scale-f   (scale-fn-factory extracted)
+           scaled    (map scale-f extracted)]
+       (map (fn [v scaled]
+              (assoc v scaled-key scaled)) maps scaled)))
+  ([maps key scale-fn-factory]
+     (scale-feature maps key key scale-fn-factory)))

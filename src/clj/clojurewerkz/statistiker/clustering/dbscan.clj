@@ -16,8 +16,9 @@
     (->> initial
          (map u/double-point)
          (.cluster clusterer)
-         (map #(hash-map :points (map (fn [a] (with-meta (vec (.getPoint a))
-                                               (.getMetadata a)))
+         (map #(hash-map :points (map (fn [a]
+                                        (with-meta (vec (.getPoint a))
+                                          (.getMetadata a)))
                                       (.getPoints %)))))))
 
 (defn cluster-by
