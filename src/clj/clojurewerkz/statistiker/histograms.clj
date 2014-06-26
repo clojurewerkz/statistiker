@@ -27,6 +27,9 @@
           (+ k1 k2)))))
 
 (defn make-numerical-histogram
+  "Makes a numerical histogram, based on Ben-Haim paper*
+
+    * http://jmlr.org/papers/volume11/ben-haim10a/ben-haim10a.pdf"
   [max-bins]
   (let [bins (atom {})]
     (reify Histogram
@@ -43,6 +46,7 @@
                             (mapv (fn [[k v]] [(double k) (double v)]) @bins))))))
 
 (defn numerical-histogram
+  "Builds a streaming numerical histogram"
   [max-bins vals]
   (let [hist (make-numerical-histogram max-bins)]
     (doseq [i vals]
@@ -50,6 +54,7 @@
     (get-counts hist)))
 
 (defn empirical-distribution
+  "Builds a histogram of data based on an empirical distribution of data"
   [bins data]
   (let [emp-d (EmpiricalDistribution. (int bins))]
     (.load emp-d (double-array (mapv double data)))
