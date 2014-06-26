@@ -37,6 +37,7 @@
     (fn [x] (double (/ (- x xmean) xsd)))))
 
 (defn standartise
+  "Normalize (standardize) the sample, so it is has a mean of 0 and a standard deviation of 1"
   [x]
   (mapv (make-standartise-fn x) x))
 
