@@ -1,8 +1,7 @@
 (ns clojurewerkz.statistiker.clustering.dbscan
   (:import [org.apache.commons.math3.ml.clustering DBSCANClusterer])
   (:require [clojurewerkz.statistiker.distance :as distance]
-            [clojurewerkz.statistiker.utils    :as u]
-            ))
+            [clojurewerkz.statistiker.utils    :as u]))
 
 (defn- ^DBSCANClusterer clusterer
   ([eps min-points]
