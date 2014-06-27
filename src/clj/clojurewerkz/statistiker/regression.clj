@@ -28,3 +28,18 @@
    :intercept-std-err  (.getInterceptStdErr regression)
    :slope-std-err      (.getSlopeStdErr regression)
    })
+
+
+(defn- calculate-slope
+  []
+
+  )
+
+(defn- calculate-intercept
+  [values]
+  (let [fact1 (count values)
+        ]))
+
+(defn linear-regression-2
+  []
+  )
