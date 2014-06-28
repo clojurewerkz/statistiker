@@ -46,3 +46,13 @@
        (map (fn [[cluster points]]
               (map #(assoc (meta %) :cluster-id cluster) points)))
        (mapcat identity)))
+
+;;
+;;
+;;
+
+(defn almost=
+  "Non-strict equality"
+  [wat center tolerance]
+  (and (>= wat (- center tolerance))
+       (<= wat (+ center tolerance))))
