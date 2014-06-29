@@ -2,9 +2,9 @@
   (:require [clojurewerkz.statistiker.fast-math :as fm]
             [clojurewerkz.statistiker.functions :as funk])
 
-  (:import [org.apache.commons.math3.analysis MultivariateFunction]
-           [org.apache.commons.math3.optimization.direct BOBYQAOptimizer]
-           [org.apache.commons.math3.optimization GoalType InitialGuess]))
+  (:import [org.apache.commons.math3.optim InitialGuess MaxEval SimpleBounds OptimizationData]
+           [org.apache.commons.math3.optim.nonlinear.scalar ObjectiveFunction ObjectiveFunctionGradient GoalType MultivariateOptimizer]
+           [org.apache.commons.math3.optim.nonlinear.scalar.noderiv BOBYQAOptimizer ]))
 
 (def goal-types
   {:minimize GoalType/MINIMIZE
@@ -15,10 +15,12 @@
   [interpolation-points max-evaluations f goal-type initial-guess]
   (let [optimizer (BOBYQAOptimizer. 4)
         res       (.optimize optimizer
-                             (int max-evaluations)
-                             f
-                             (get goal-types goal-type)
-                             (double-array initial-guess))]
+                             (into-array OptimizationData
+                                         [(MaxEval. (int max-evaluations))
+                                          (funk/objective-function f)
+                                          (get goal-types goal-type)
+                                          (SimpleBounds/unbounded (count initial-guess))
+                                          (InitialGuess. (double-array initial-guess))]))]
     {:point (vec (.getPoint res))
      :value (.getValue res)}))
 
