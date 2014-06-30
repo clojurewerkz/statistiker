@@ -2,12 +2,17 @@
   (:import [org.apache.commons.math3.distribution
             NormalDistribution
             LogNormalDistribution
-            PoissonDistribution]))
+            MultivariateNormalDistribution
+            PoissonDistribution
+            BinomialDistribution]))
 
 (defn- distribution
-  [gen]
-  ((fn sample []
-     (cons (.sample gen) (lazy-seq (sample))))))
+  ([gen]
+     ((fn sample []
+        (cons (.sample gen) (lazy-seq (sample))))))
+  ([gen conv]
+     ((fn sample []
+        (cons (conv (.sample gen)) (lazy-seq (sample)))))))
 
 (defn normal-distribution
   [mean sd]
@@ -22,3 +27,14 @@
   (distribution (LogNormalDistribution. (double scale)
                                         (double shape)
                                         (double inverse-accuracy))))
+
+(defn binomial-distribution
+  [trials p]
+  (distribution (BinomialDistribution. (int trials)
+                                       (double p))))
+
+(defn multivariate-normal-distribution
+  [means covariances]
+  (distribution (MultivariateNormalDistribution. (double-array means)
+                                                 (into-array (map double-array covariances)))
+                vec))
