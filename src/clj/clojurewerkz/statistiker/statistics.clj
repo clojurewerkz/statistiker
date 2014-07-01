@@ -121,3 +121,8 @@
          n)
         (pow sigma 2))
        3)))
+
+(defn kurtosis-math3
+  "Slow (and memory consuming but correct) way to claculate Kurtosis"
+  [data]
+  (.getKurtosis (DescriptiveStatistics. (double-array data))))
