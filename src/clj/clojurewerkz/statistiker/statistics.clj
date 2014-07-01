@@ -126,3 +126,20 @@
   "Slow (and memory consuming but correct) way to claculate Kurtosis"
   [data]
   (.getKurtosis (DescriptiveStatistics. (double-array data))))
+
+(defn skewness
+  "
+                [n / (n - 1) (n - 2)] * sum[(x_i - mean)^3]
+    skewness = ---------------------------------------------
+                                    std^3
+"
+  [xs]
+  (let [mu    (mean xs)
+        sigma (sd xs)
+        n     (count xs)]
+    (/ (* (/ n
+             (* (- n 1) (- n 2)))
+          (->> xs
+               (map #(pow (- % mu) 3))
+               (reduce +)))
+       (pow sigma 3))))
