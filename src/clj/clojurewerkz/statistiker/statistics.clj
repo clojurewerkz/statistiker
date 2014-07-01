@@ -143,3 +143,16 @@
                (map #(pow (- % mu) 3))
                (reduce +)))
        (pow sigma 3))))
+
+(defn central-moment
+  [xs i]
+  (let [mu    (mean xs)
+        sigma (sd xs)
+        n     (count xs)]
+
+    (/ (* (/ n ;; That doesn't appear to be correct???
+             (apply * (take (dec i) (iterate dec (dec n)))))
+          (->> xs
+               (map #(pow (- % mu) i))
+               (reduce +)))
+       (pow sigma i))))
