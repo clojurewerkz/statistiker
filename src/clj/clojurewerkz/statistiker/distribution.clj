@@ -4,7 +4,11 @@
             LogNormalDistribution
             MultivariateNormalDistribution
             PoissonDistribution
-            BinomialDistribution]))
+            BinomialDistribution
+            ChiSquaredDistribution
+            ExponentialDistribution
+            GammaDistribution
+            HypergeometricDistribution]))
 
 (defn- distribution
   ([gen]
@@ -38,3 +42,24 @@
   (distribution (MultivariateNormalDistribution. (double-array means)
                                                  (into-array (map double-array covariances)))
                 vec))
+
+(defn chi-suqared-distribution
+  [degrees-of-freedom inverse-cum-accuracy]
+  (distribution (ChiSquaredDistribution. (double degrees-of-freedom)
+                                         (double inverse-cum-accuracy))))
+
+(defn exponential-distribution
+  [mean inverse-cum-accuracy]
+  (distribution (ExponentialDistribution. (double mean)
+                                          (double inverse-cum-accuracy))))
+
+(defn gamma-distribution
+  [shape scale]
+  (distribution (GammaDistribution. (double shape)
+                                    (double scale))))
+
+(defn hypergeometric-distribution
+  [population-size number-success sample-size]
+  (distribution (HypergeometricDistribution. (int population-size)
+                                             (int number-success)
+                                             (int sample-size))))
