@@ -1,6 +1,9 @@
 (ns clojurewerkz.statistiker.statistics
   (:import [org.apache.commons.math3.stat.descriptive.rank Percentile]
-           [org.apache.commons.math3.stat StatUtils])
+           [org.apache.commons.math3.stat.descriptive DescriptiveStatistics]
+
+           [org.apache.commons.math3.stat StatUtils]
+           [])
   (:require [clojurewerkz.statistiker.fast-math :refer [sqrt pow]]))
 
 (defn mean
@@ -77,3 +80,44 @@
   (let [p (Percentile.)
         _ (.setData p (double-array values))]
     (.evaluate p (double percentile))))
+
+
+(defn kurtosis
+  "
+                  n*(n+1) / (n - 1)*(n - 2)*(n-3)] * sum[(x_i - mean)^4           3 * (n - 1)^2
+  kurtosis =  ------------------------------------------------------------ - ----------------------
+                                      std^4                                     (n - 2) * (n - 3)
+"
+
+  [xs]
+  (let [mu    (mean xs)
+        sigma (sd xs)
+        n     (count xs)]
+
+    (- (* (/ (* n (+ n 1))
+             (* (- n 1) (- n 2) (- n 3)))
+
+          (/ (->> xs
+                  (map #(pow (- % mu) 4))
+                  (reduce +))
+             (pow sigma 4)))
+
+
+       (/ (* 3 (pow (- n 1) 2))
+          (- n 2) (- n 3)))))
+
+
+(defn- kurtosis-theoretical
+  "One of the ways to calculate kurtosis (biased on smaller data sets)"
+  [xs]
+  (let [mu    (mean xs)
+        sigma (variance xs)
+        n     (count xs)]
+    (- (/
+        (/
+         (->> xs
+              (map #(pow (- % mu) 4))
+              (reduce +))
+         n)
+        (pow sigma 2))
+       3)))
