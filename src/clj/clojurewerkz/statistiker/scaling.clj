@@ -20,7 +20,9 @@
   (let [xmin (apply min x)
         xmax (apply max x)
         diff (- xmax xmin) ]
-    (fn [x] (double (/ (- x xmin) diff)))))
+    (if (= diff 0)
+      (constantly 0)
+      (fn [x] (double (/ (- x xmin) diff))))))
 
 (defn rescale
   [x]

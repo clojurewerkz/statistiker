@@ -14,6 +14,7 @@
   [norm mean sigma]
   (Gaussian. norm mean sigma))
 
+
 (defn fit
   "Extract x and y from dataset, and compose an approximated, fitted dataset from interpolated points, taking
    `steps` points."

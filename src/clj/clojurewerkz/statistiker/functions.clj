@@ -28,17 +28,17 @@
        (apply f (vec v))))))
 
 (defn objective-function
-  [^MultivariateFunction f]
-  (ObjectiveFunction. f))
+  [f]
+  (ObjectiveFunction. (fn->multivariate-function f)))
 
 (defn objective-function-gradient
-  [^MultivariateFunction f]
-  (ObjectiveFunctionGradient. f))
+  [f]
+  (ObjectiveFunctionGradient. (fn->multivariate-vector-function f)))
 
 (defn linear-fn
   "Linear function for optimizing least squares for linear regression and so forth"
   [data]
-  (fn->multivariate-function
+  (objective-function
    (fn [intercept slope]
      (let [f   (line intercept slope)
            res (->> data
@@ -66,3 +66,34 @@
                             (matrix/e* (matrix/transpose target)
                                        r
                                        2))))})
+
+
+(defn two-var-least-squares
+  [points]
+  {:objective          (objective-function
+                        (fn [intercept slope]
+                          (let [f   (line intercept slope)
+                                res (->> points
+                                         (map (fn [[x y]]
+                                                (fm/sqr (- y (f x)))))
+                                         (reduce +))]
+                            res)))
+
+   :objective-gradient (objective-function-gradient
+                        (fn [intercept slope]
+                          [ (* 2 (->> points
+                                      (map (fn [[x y]]
+                                             (*
+                                              (- y (+ intercept (* slope x)))
+                                              -1)))
+                                      (reduce +)))
+
+                            (* 2 (->> points
+                                      (map (fn [[x y]]
+                                             (*
+                                              (- y (+ intercept (* slope x)))
+                                              -1
+                                              x)))
+                                      (reduce +)))
+                            ]
+                          ))})
