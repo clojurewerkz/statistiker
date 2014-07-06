@@ -10,19 +10,39 @@
             NonLinearConjugateGradientOptimizer$Formula]
            [org.apache.commons.math3.optim.nonlinear.scalar.noderiv BOBYQAOptimizer ]))
 
-(defn- point->map
-  [^PointValuePair point]
-  {:point (vec (.getPoint point))
-   :value (.getValue point)})
+;;
+;; Constants
+;;
 
 (def goal-types
   {:minimize GoalType/MINIMIZE
    :maximize GoalType/MAXIMIZE})
 
+(def ^:private non-conjugate-gradient-optimizer-formula
+  {:fletcher-reeves NonLinearConjugateGradientOptimizer$Formula/FLETCHER_REEVES
+   :polak-ribiere   NonLinearConjugateGradientOptimizer$Formula/POLAK_RIBIERE})
+
+;;
+;; Constructors
+;;
+
+(defn ^BOBYQAOptimizer make-bobyqa-optimizer
+  [iteration-points]
+  (BOBYQAOptimizer. 4))
+
+(defn- point->map
+  [^PointValuePair point]
+  {:point (vec (.getPoint point))
+   :value (.getValue point)})
+
+;;
+;; Optimization Shortcuts
+;;
+
 (defn optimize-bobyqa
   "Optimize (multivariate) function `f` with Bound Optimization BY Quadratic Approximation"
   [interpolation-points max-evaluations f goal-type initial-guess]
-  (let [optimizer (BOBYQAOptimizer. 4)
+  (let [optimizer (make-bobyqa-optimizer 4) ;; Remove hardcoded variable
         res       (.optimize optimizer
                              (into-array OptimizationData
                                          [(MaxEval. (int max-evaluations))
@@ -33,9 +53,7 @@
     {:point (vec (.getPoint res))
      :value (.getValue res)}))
 
-(def ^:private non-conjugate-gradient-optimizer-formula
-  {:fletcher-reeves NonLinearConjugateGradientOptimizer$Formula/FLETCHER_REEVES
-   :polak-ribiere   NonLinearConjugateGradientOptimizer$Formula/POLAK_RIBIERE})
+
 
 (defn optimize-non-conjugate-gradient
   [data max-evaluations formula]

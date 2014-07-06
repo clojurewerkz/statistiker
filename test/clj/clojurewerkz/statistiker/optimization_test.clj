@@ -27,20 +27,4 @@
                                                                    100 :fletcher-reeves)]
 
     (is (almost= intercept -39 0.1))
-    (is (almost= slope 61 0.3)))
-
-  (comment
-    (let [problem (fns/two-var-least-squares linear-regression-test-data)
-          optim   (NonLinearConjugateGradientOptimizer. (NonLinearConjugateGradientOptimizer$Formula/POLAK_RIBIERE)
-                                                        (SimpleValueChecker. 1e-6, 1e-6))
-          res     (.optimize optim
-                             (into-array OptimizationData
-                                         [(MaxEval. 100)
-                                          (:objective problem)
-                                          (:objective-gradient problem)
-                                          GoalType/MINIMIZE
-                                          (InitialGuess. (double-array [0 0]))]
-                                         ))]
-      (println (vec (.getPoint res)))
-
-      )))
+    (is (almost= slope 61 0.3))))
