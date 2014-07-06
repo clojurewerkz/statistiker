@@ -38,15 +38,14 @@
 (defn linear-fn
   "Linear function for optimizing least squares for linear regression and so forth"
   [data]
-  (objective-function
-   (fn [intercept slope]
-     (let [f   (line intercept slope)
-           res (->> data
-                    (map (fn [[x y]]
-                           (fm/sqr
-                            (- y (f x)))))
-                    (reduce +))]
-       res))))
+  (fn [intercept slope]
+    (let [f   (line intercept slope)
+          res (->> data
+                   (map (fn [[x y]]
+                          (fm/sqr
+                           (- y (f x)))))
+                   (reduce +))]
+      res)))
 
 
 (defn linear-problem
