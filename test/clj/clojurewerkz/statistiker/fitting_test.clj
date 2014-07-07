@@ -1,4 +1,4 @@
-Xp(ns clojurewerkz.statistiker.fitting-test
+(ns clojurewerkz.statistiker.fitting-test
   (:require [clojurewerkz.statistiker.fitting :refer :all]
             [clojure.test :refer :all]))
 

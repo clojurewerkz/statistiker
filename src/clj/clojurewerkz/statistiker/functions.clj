@@ -9,7 +9,10 @@
            [org.apache.commons.math3.optim.nonlinear.scalar.noderiv BOBYQAOptimizer] ;; Use optim version, not that one
            ))
 
-(defn- line
+(defn line
+  "Simple linear funciton:
+
+     f(y) = ax + b"
   [intercept slope]
   (fn [x]
     (+ intercept (* slope x))))
@@ -35,6 +38,10 @@
   [f]
   (ObjectiveFunctionGradient. (fn->multivariate-vector-function f)))
 
+;;
+;; Functions
+;;
+
 (defn linear-fn
   "Linear function for optimizing least squares for linear regression and so forth"
   [data]
@@ -46,7 +53,6 @@
                            (- y (f x)))))
                    (reduce +))]
       res)))
-
 
 (defn linear-problem
   [factors target]
