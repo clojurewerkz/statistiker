@@ -26,5 +26,6 @@
   (let [{:keys [intercept slope]} (linear-regression3 linear-regression-test-data
                                                       100
                                                       :fletcher-reeves)]
+
     (is (almost= intercept -39 0.1))
     (is (almost= slope 61 0.3))))

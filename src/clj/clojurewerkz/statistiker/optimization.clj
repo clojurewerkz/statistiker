@@ -3,7 +3,9 @@
             [clojurewerkz.statistiker.functions :as funk]
             [schema.macros                      :as sm])
 
-  (:import [org.apache.commons.math3.optim InitialGuess MaxEval SimpleBounds
+  (:import [clojure.lang IFn]
+           [clojurewerkz.statistiker.functions GradientProblem]
+           [org.apache.commons.math3.optim InitialGuess MaxEval SimpleBounds
             OptimizationData SimpleValueChecker PointValuePair]
            [org.apache.commons.math3.optim.nonlinear.scalar ObjectiveFunction
             ObjectiveFunctionGradient GoalType MultivariateOptimizer]
@@ -49,14 +51,14 @@
   [guess]
   (InitialGuess. (double-array guess)))
 
-  ;;
-  ;; Optimization Shortcuts
-  ;;
+;;
+;; Optimization Shortcuts
+;;
 
 
 (defn optimize-bobyqa
   "Optimize (multivariate) function `f` with Bound Optimization By Quadratic Approximation"
-  [interpolation-points max-evaluations ^clojure.lang.IFn f goal-type guess]
+  [interpolation-points max-evaluations ^IFn f goal-type guess]
   (let [optimizer (make-bobyqa-optimizer 4) ;; Remove hardcoded variable
         res       (.optimize optimizer
                              (into-array OptimizationData
@@ -70,20 +72,26 @@
 
 
 (defn optimize-non-conjugate-gradient
-  [problem max-evaluations formula] ;; TODO: turn `problem` into type
-  (let [optim             (make-ncg-optimizer formula)
-        res               (.optimize optim
-                                     (into-array OptimizationData
-                                                 [(MaxEval. (int max-evaluations))
-                                                  (:objective problem)
-                                                  (:objective-gradient problem)
-                                                  (:minimize goal-types) ;; TODO: use safe-get?
-                                                  (initial-guess [0 0])]))]
-    (point->map res)))
+  ([^IFn objective ^IFn gradient ^Number max-evaluations ^clojure.lang.Keyword formula]
+     (optimize-non-conjugate-gradient (funk/make-gradient-problem objective
+                                                                  gradient)
+                                      max-evaluations
+                                      formula))
 
-  ;;
-  ;; Implementaion
-  ;;
+  ([^GradientProblem problem ^Number max-evaluations ^clojure.lang.Keyword formula]
+     (let [optim             (make-ncg-optimizer formula)
+           res               (.optimize optim
+                                        (into-array OptimizationData
+                                                    [(MaxEval. (int max-evaluations))
+                                                     (.objective-fn problem)
+                                                     (.objective-fn-gradient problem)
+                                                     (:minimize goal-types) ;; TODO: use safe-get?
+                                                     (initial-guess [0 0])]))]
+       (point->map res))))
+
+;;
+;; Implementaion
+;;
 
 
 (defn bobyqa-interpolation-points-avg

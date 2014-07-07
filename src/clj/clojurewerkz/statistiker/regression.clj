@@ -1,7 +1,7 @@
 (ns clojurewerkz.statistiker.regression
   (:import [org.apache.commons.math3.stat.regression SimpleRegression])
   (:require [clojurewerkz.statistiker.optimization :as optim]
-            [clojurewerkz.statistiker.functions :as funk]))
+            [clojurewerkz.statistiker.functions    :as funk]))
 
 (defn linear-regression
   "Performs a linear regression"
@@ -14,10 +14,10 @@
            field2-extractor (if (fn? field2-extractor)
                               field2-extractor
                               #(get % field2-extractor))
-           regression (SimpleRegression. true)
-           matrix     (into-array (map double-array (map vector
-                                                         (map field1-extractor data)
-                                                         (map field2-extractor data))))]
+           regression       (SimpleRegression. true)
+           matrix           (into-array (map double-array (map vector
+                                                               (map field1-extractor data)
+                                                               (map field2-extractor data))))]
        (.addData regression matrix)
        {:intercept (.getIntercept regression)
         :slope     (.getSlope regression)})))
@@ -46,7 +46,7 @@
 (defn linear-regression3
   "Linear Regression through Non-Conjugate Gradient Descent."
   [data max-evaluations formula]
-  (let [problem           (funk/two-var-least-squares data)
+  (let [problem           (funk/two-var-least-squares-vector data)
         res               (optim/optimize-non-conjugate-gradient problem max-evaluations formula)
         {:keys [point]}   res
         [intercept slope] point]
