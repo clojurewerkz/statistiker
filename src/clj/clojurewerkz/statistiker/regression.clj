@@ -46,7 +46,7 @@
 (defn linear-regression3
   "Linear Regression through Non-Conjugate Gradient Descent."
   [data max-evaluations formula]
-  (let [problem           (funk/two-var-least-squares-vector data)
+  (let [problem           (funk/least-squares-problem data)
         res               (optim/optimize-non-conjugate-gradient problem max-evaluations formula)
         {:keys [point]}   res
         [intercept slope] point]

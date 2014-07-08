@@ -86,7 +86,7 @@
                                     2))))))
 
 
-(defn two-var-least-squares-vector
+(defn least-squares-problem
   [points]
   (let [factors (->> points (map butlast) (map #(cons 1 %)))
         target  (map last points)]
@@ -101,6 +101,9 @@
 
                       (objective-function-gradient
                        (fn [& point]
+                         ;; M = (X ^ T * X)
+                         ;; b = (X ^ T * y)
+                         ;; beta = M^-1 * b
                          (let [ft (matrix/transpose factors)
                                m! (matrix/inverse (matrix/dot ft factors))
                                b  (matrix/dot ft target)]
