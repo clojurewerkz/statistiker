@@ -87,6 +87,7 @@
 
 
 (defn least-squares-problem
+  "Least squares problem: https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)#The_general_problem"
   [points]
   (let [factors (->> points (map butlast) (map #(cons 1 %)))
         target  (map last points)]
