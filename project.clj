@@ -9,6 +9,7 @@
                  [org.apache.commons/commons-math3 "3.3"]
                  [net.mikera/core.matrix           "0.20.0"]
 
+                 [org.clojure/core.typed           "0.2.53"]
                  [prismatic/schema                 "0.2.2"]]
   :core.typed {:check [clojurewerkz.statistiker.optimization]}
   :source-paths       ["src/clj"]
