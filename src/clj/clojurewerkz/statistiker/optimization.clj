@@ -7,6 +7,7 @@
            [clojurewerkz.statistiker.functions GradientProblem]
            [org.apache.commons.math3.optim InitialGuess MaxEval SimpleBounds
             OptimizationData SimpleValueChecker PointValuePair]
+           [org.apache.commons.math3.optim.nonlinear.vector.jacobian LevenbergMarquardtOptimizer]
            [org.apache.commons.math3.optim.nonlinear.scalar ObjectiveFunction
             ObjectiveFunctionGradient GoalType MultivariateOptimizer]
            [ org.apache.commons.math3.optim.nonlinear.scalar.gradient NonLinearConjugateGradientOptimizer
@@ -28,6 +29,14 @@
 ;;
 ;; Constructors
 ;;
+
+(defn ^LevenbergMarquardtOptimizer make-levenberg-marquardt-optimizer
+  []
+  (LevenbergMarquardtOptimizer.))
+
+(defn ^BOBYQAOptimizer make-bobyqa-optimizer
+  [iteration-points]
+  (BOBYQAOptimizer. (int iteration-points)))
 
 (defn ^BOBYQAOptimizer make-bobyqa-optimizer
   [iteration-points]

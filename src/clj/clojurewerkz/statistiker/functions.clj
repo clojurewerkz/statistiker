@@ -5,13 +5,12 @@
             [schema.core                        :as s])
 
   (:import [clojure.lang IFn]
+           [org.apache.commons.math3.analysis.function Gaussian]
+           [org.apache.commons.math3.analysis.polynomials PolynomialFunction]
            [org.apache.commons.math3.analysis MultivariateFunction MultivariateVectorFunction]
-           [org.apache.commons.math3.optim InitialGuess MaxEval SimpleBounds]
-           [org.apache.commons.math3.optim.nonlinear.scalar ObjectiveFunction ObjectiveFunctionGradient GoalType]
-           [org.apache.commons.math3.optim.nonlinear.scalar.noderiv BOBYQAOptimizer] ;; Use optim version, not that one
-           ))
+           [org.apache.commons.math3.optim.nonlinear.scalar ObjectiveFunction ObjectiveFunctionGradient]))
 
-(defn line
+(defn ^Number line
   "Simple linear funciton:
 
      f(y) = ax + b"
@@ -112,33 +111,16 @@
                            (ops/- (matrix/mmul m! b)
                                   point)))))))
 
+(defn gaussian-function
+  [norm mean sigma]
+  (Gaussian. norm mean sigma))
 
-(defn two-var-least-squares
-  [points]
-  (GradientProblem. (objective-function
-                     (fn [intercept slope]
-                       (let [f   (line intercept slope)
-                             res (->> points
-                                      (map (fn [[x y]]
-                                             (fm/sqr (- y (f x)))))
-                                      (reduce +))]
-                         res)))
+(defn polynomial-function
+  []
+  (PolynomialFunction. norm mean sigma))
 
-                    (objective-function-gradient
-                     (fn [intercept slope]
-                       [ (* 2 (->> points
-                                   (map (fn [[x y]]
-                                          (*
-                                           (- y (+ intercept (* slope x)))
-                                           -1)))
-                                   (reduce +)))
-
-                         (* 2 (->> points
-                                   (map (fn [[x y]]
-                                          (*
-                                           (- y (+ intercept (* slope x)))
-                                           -1
-                                           x)))
-                                   (reduce +)))
-
-                         ]))))
+(defn wrap-function
+  "Returns a clojure Fn that wraps Function"
+  [funk]
+  (fn [x]
+    (.value funk (double x))))

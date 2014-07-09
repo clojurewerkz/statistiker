@@ -1,19 +1,32 @@
 (ns clojurewerkz.statistiker.fitting
+  (:require [clojurewerkz.statistiker.optimization :as optim])
   (:import [org.apache.commons.math3.analysis.function Gaussian]
-           [org.apache.commons.math3.fitting GaussianFitter]
-           [org.apache.commons.math3.optim.nonlinear.vector.jacobian LevenbergMarquardtOptimizer]))
+           [org.apache.commons.math3.fitting GaussianFitter CurveFitter HarmonicFitter PolynomialFitter]))
 
-(defn gaussian-fitting
-  [v]
-  (let [inst   (GaussianFitter. (LevenbergMarquardtOptimizer.))]
+(defn- make-fitter
+  [fitter-klass v]
+  (let [inst (eval `(new ~fitter-klass (optim/make-levenberg-marquardt-optimizer)))]
     (doseq [[x y] v]
       (.addObservedPoint inst x y))
-    (vec (.fit inst))))
+    inst
+    ))
 
-(defn gaussian-function
-  [norm mean sigma]
-  (Gaussian. norm mean sigma))
+(defn gaussian-fitter
+  [v]
+  (let [fitter (make-fitter GaussianFitter v)]
+    (vec (.fit fitter))))
 
+(defn curve-fitter
+  [v]
+  (make-fitter CurveFitter v))
+
+(defn harmonic-fitter
+  [v]
+  (make-fitter HarmonicFitter v))
+
+(defn polynomial-fitter
+  [v]
+  (make-fitter PolynomialFitter v))
 
 (defn fit
   "Extract x and y from dataset, and compose an approximated, fitted dataset from interpolated points, taking
@@ -24,7 +37,7 @@
         min-x             (reduce min (map (fn [i] (get i x)) dss))
         max-x             (reduce max (map (fn [i] (get i x)) dss))
         step              (/ (- max-x min-x) steps)
-        [norm mean sigma] (gaussian-fitting prepared)
+        [norm mean sigma] (gaussian-fitter prepared)
         f                 (gaussian-function norm mean sigma)]
     (mapv
      (fn [x-val]
