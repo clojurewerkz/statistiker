@@ -1,5 +1,6 @@
 (ns clojurewerkz.statistiker.fitting
-  (:require [clojurewerkz.statistiker.optimization :as optim])
+  (:require [clojurewerkz.statistiker.optimization :as optim]
+            [clojurewerkz.statistiker.functions    :as funk])
   (:import [org.apache.commons.math3.analysis.function Gaussian]
            [org.apache.commons.math3.fitting GaussianFitter CurveFitter HarmonicFitter PolynomialFitter]))
 
@@ -17,8 +18,10 @@
     (vec (.fit fitter))))
 
 (defn curve-fitter
-  [v]
-  (make-fitter CurveFitter v))
+  [v f initial-guess]
+  (let [fitter (make-fitter CurveFitter v)]
+    (vec (.fit fitter f (double-array initial-guess)))
+    ))
 
 (defn harmonic-fitter
   [v]

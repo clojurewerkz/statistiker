@@ -5,9 +5,9 @@
             [schema.core                        :as s])
 
   (:import [clojure.lang IFn]
-           [org.apache.commons.math3.analysis.function Gaussian]
+           [org.apache.commons.math3.analysis.function Gaussian Gaussian$Parametric]
            [org.apache.commons.math3.analysis.polynomials PolynomialFunction]
-           [org.apache.commons.math3.analysis MultivariateFunction MultivariateVectorFunction]
+           [org.apache.commons.math3.analysis MultivariateFunction MultivariateVectorFunction ParametricUnivariateFunction]
            [org.apache.commons.math3.optim.nonlinear.scalar ObjectiveFunction ObjectiveFunctionGradient]))
 
 (defn ^Number line
@@ -111,16 +111,27 @@
                            (ops/- (matrix/mmul m! b)
                                   point)))))))
 
+;; (curve-fitter [[1 1] [2 2] [3 3]] (funk/gaussian-function) [0 0 1 ])
 (defn gaussian-function
-  [norm mean sigma]
-  (Gaussian. norm mean sigma))
+  ([]
+     (Gaussian$Parametric.))
+  ([norm mean sigma]
+     (Gaussian. norm mean sigma)))
 
-(defn polynomial-function
-  []
-  (PolynomialFunction. norm mean sigma))
+(comment (defn polynomial-function
+           []
+           (PolynomialFunction. norm mean sigma)))
 
 (defn wrap-function
   "Returns a clojure Fn that wraps Function"
   [funk]
   (fn [x]
     (.value funk (double x))))
+
+(defn to-parametric-fn
+  [identity]
+  (reify ParametricUnivariateFunction
+   (value [this x params]
+     (.value (apply identity params) (double x)))
+   (gradient [this x params]
+     (.gradient (apply identity params) (double x)))))
