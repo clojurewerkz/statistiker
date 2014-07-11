@@ -5,8 +5,9 @@
             [schema.core                        :as s])
 
   (:import [clojure.lang IFn]
-           [org.apache.commons.math3.analysis.function Gaussian Gaussian$Parametric]
-           [org.apache.commons.math3.analysis.polynomials PolynomialFunction]
+           [org.apache.commons.math3.analysis.function Gaussian Gaussian$Parametric HarmonicOscillator
+            HarmonicOscillator$Parametric]
+           [org.apache.commons.math3.analysis.polynomials PolynomialFunction PolynomialFunction$Parametric]
            [org.apache.commons.math3.analysis MultivariateFunction MultivariateVectorFunction ParametricUnivariateFunction]
            [org.apache.commons.math3.optim.nonlinear.scalar ObjectiveFunction ObjectiveFunctionGradient]))
 
@@ -112,15 +113,23 @@
                                   point)))))))
 
 ;; (curve-fitter [[1 1] [2 2] [3 3]] (funk/gaussian-function) [0 0 1 ])
-(defn gaussian-function
+(defn ^Gaussian gaussian-function
   ([]
      (Gaussian$Parametric.))
-  ([norm mean sigma]
+  ([[norm mean sigma]]
      (Gaussian. norm mean sigma)))
 
-(comment (defn polynomial-function
-           []
-           (PolynomialFunction. norm mean sigma)))
+(defn ^PolynomialFunction  polynomial-function
+  ([]
+     (PolynomialFunction$Parametric.))
+  ([coefficients]
+     (PolynomialFunction. (double-array coefficients))))
+
+(defn ^HarmonicOscillator harmonic-oscillator
+  ([]
+     (HarmonicOscillator$Parametric.))
+  ([[amplitude omega phase]]
+     (HarmonicOscillator. (double amplitude) (double omega) (double phase))))
 
 (defn wrap-function
   "Returns a clojure Fn that wraps Function"

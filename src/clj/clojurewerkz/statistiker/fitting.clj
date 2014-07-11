@@ -20,28 +20,29 @@
 (defn curve-fitter
   [v f initial-guess]
   (let [fitter (make-fitter CurveFitter v)]
-    (vec (.fit fitter f (double-array initial-guess)))
-    ))
-
-(defn harmonic-fitter
-  [v]
-  (make-fitter HarmonicFitter v))
+    (vec (.fit fitter f (double-array initial-guess)))))
 
 (defn polynomial-fitter
-  [v]
-  (make-fitter PolynomialFitter v))
+  [v max-eval initial-guess]
+  (let [fitter (make-fitter PolynomialFitter v)]
+    (vec (.fit fitter (int max-eval) (double-array initial-guess)))))
+
+(defn harmonic-fitter
+  [v initial-guess]
+  (let [fitter (make-fitter HarmonicFitter v)]
+    (vec (.fit fitter (double-array initial-guess)))))
 
 (defn fit
   "Extract x and y from dataset, and compose an approximated, fitted dataset from interpolated points, taking
    `steps` points."
-  [dss x y steps]
-  (let [prepared          (map (fn [i] [(get i x)
-                                       (get i y)]) dss)
-        min-x             (reduce min (map (fn [i] (get i x)) dss))
-        max-x             (reduce max (map (fn [i] (get i x)) dss))
-        step              (/ (- max-x min-x) steps)
-        [norm mean sigma] (gaussian-fitter prepared)
-        f                 (gaussian-function norm mean sigma)]
+  [dss x y fitter-ctor function-ctor steps]
+  (let [prepared (map (fn [i] [(get i x)
+                              (get i y)]) dss)
+        min-x    (reduce min (map (fn [i] (get i x)) dss))
+        max-x    (reduce max (map (fn [i] (get i x)) dss))
+        step     (/ (- max-x min-x) steps)
+        params   (fitter-ctor prepared)
+        f        (function-ctor params)]
     (mapv
      (fn [x-val]
        {x x-val y (.value f (double x-val))})
