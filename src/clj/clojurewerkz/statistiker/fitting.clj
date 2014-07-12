@@ -9,8 +9,7 @@
   (let [inst (eval `(new ~fitter-klass (optim/make-levenberg-marquardt-optimizer)))]
     (doseq [[x y] v]
       (.addObservedPoint inst x y))
-    inst
-    ))
+    inst))
 
 (defn gaussian-fitter
   [v]
