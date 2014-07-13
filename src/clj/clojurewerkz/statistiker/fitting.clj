@@ -45,4 +45,4 @@
     (mapv
      (fn [x-val]
        {x x-val y (.value f (double x-val))})
-     (take steps (iterate #(+ % step) min-x)))))
+     (take (inc steps) (iterate #(+ % step) min-x)))))
