@@ -19,14 +19,14 @@
 
 (deftest l1-normalize-test
   (is (= (map double [(/ 2 10)
-                     (/ 2 10)
-                     (/ 6 10)])
+                      (/ 2 10)
+                      (/ 6 10)])
          (l1-normalize [2 2 6]))))
 
 
 (deftest l2-normalize-test
-  (is (= [(double (/ 10 (Math/sqrt 125)))
-          (double (/ 5 (Math/sqrt 125)))]
+  (is (= (map double [(/ 10 (Math/sqrt 125))
+                      (/ 5 (Math/sqrt 125))])
          (l2-normalize [10 5]))))
 
 
