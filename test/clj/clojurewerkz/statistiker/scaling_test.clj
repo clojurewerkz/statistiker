@@ -18,9 +18,9 @@
 
 
 (deftest l1-normalize-test
-  (is (= [(/ 2 10)
-          (/ 2 10)
-          (/ 6 10)]
+  (is (= (map double [(/ 2 10)
+                     (/ 2 10)
+                     (/ 6 10)])
          (l1-normalize [2 2 6]))))
 
 
