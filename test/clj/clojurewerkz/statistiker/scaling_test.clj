@@ -16,6 +16,10 @@
           (/ 25  (Math/sqrt 1250))]
          (standartise [50 100]))))
 
+(deftest lp-norm-wrong-param
+   (is (thrown? AssertionError (make-lp-normalize-fn -2 [1 2 3])))
+   (is (thrown? AssertionError (make-lp-normalize-fn 0 [1 2 3])))
+   (is (thrown? AssertionError (make-lp-normalize-fn 3.7 [1 2 3]))))
 
 (deftest l1-normalize-test
   (is (= (map double [(/ 2 10)

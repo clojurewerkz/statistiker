@@ -44,6 +44,8 @@
 
 (defn make-lp-normalize-fn
   [p x]
+  {:pre [(pos? p)
+         (integer? p)]}
   (let
     [sum (->> x
                  (map (comp #(pow % p) #(Math/abs %)))
