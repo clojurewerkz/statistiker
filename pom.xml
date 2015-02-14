@@ -16,7 +16,7 @@
   <scm>
     <connection>scm:git:git://github.com/clojurewerkz/statistiker.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/clojurewerkz/statistiker.git</developerConnection>
-    <tag>4b592ed76673e07a025ffff5c02204a72bd38b83
+    <tag>77c9342c703d05d621d7a9cf57a17616ac685cd5
 </tag>
     <url>https://github.com/clojurewerkz/statistiker</url>
   </scm>
@@ -63,7 +63,7 @@
   <repositories>
     <repository>
       <id>central</id>
-      <url>http://repo1.maven.org/maven2/</url>
+      <url>https://repo1.maven.org/maven2/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
-      <version>3.2</version>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>net.mikera</groupId>
@@ -104,14 +104,14 @@
       <version>0.20.0</version>
     </dependency>
     <dependency>
-      <groupId>org.jblas</groupId>
-      <artifactId>jblas</artifactId>
-      <version>1.2.3</version>
+      <groupId>prismatic</groupId>
+      <artifactId>schema</artifactId>
+      <version>0.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
       <artifactId>tools.nrepl</artifactId>
-      <version>0.2.3</version>
+      <version>0.2.6</version>
       <exclusions>
         <exclusion>
           <groupId>org.clojure</groupId>

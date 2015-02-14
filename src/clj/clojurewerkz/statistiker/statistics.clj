@@ -2,8 +2,7 @@
   (:import [org.apache.commons.math3.stat.descriptive.rank Percentile]
            [org.apache.commons.math3.stat.descriptive DescriptiveStatistics]
 
-           [org.apache.commons.math3.stat StatUtils]
-           [])
+           [org.apache.commons.math3.stat StatUtils])
   (:require [clojurewerkz.statistiker.fast-math :refer [sqrt pow]]))
 
 (defn mean
