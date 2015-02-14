@@ -52,10 +52,6 @@ Double licensed under the Eclipse Public License (the same as Clojure) or the Ap
 
 ## Credits
 
-Development supported by [codecentric AG](http://codecentric.de)
-
-![Development Supported](https://www.codecentric.de/wp-content/themes/ccHomepage/img/logo-codecentric.png)
-
 LibSVM sources belong to their respected owners, except for the changes our team made to the source code.
 
 The project repository contains several public datasets, added to provide best available examples for
