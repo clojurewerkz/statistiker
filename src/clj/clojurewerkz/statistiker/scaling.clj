@@ -1,6 +1,6 @@
 (ns clojurewerkz.statistiker.scaling
   (:require [clojurewerkz.statistiker.statistics :refer [mean sd]]
-            [clojurewerkz.statistiker.fast-math :refer [sqr sqrt]]))
+            [clojurewerkz.statistiker.fast-math :refer [sqr sqrt pow]]))
 
 (defn make-rescale-range-fn
   [x xmin xmax]
@@ -42,30 +42,30 @@
   [x]
   (mapv (make-standartise-fn x) x))
 
-(defn make-l1-normalize-fn
-  [x]
-  (let [sum (->> x
-                 (map #(Math/abs %))
-                 (reduce +))]
+(defn make-lp-normalize-fn
+  [p x]
+  {:pre [(pos? p)
+         (integer? p)]}
+  (let
+    [sum (->> x
+                 (map (comp #(pow % p) #(Math/abs %)))
+                 (reduce +)
+                 (#(pow % (/ 1.0 p))))]
     #(/ % sum)))
+
+(defn lp-normalize
+  [p x]
+  (mapv (make-lp-normalize-fn p x) x))
 
 (defn l1-normalize
   "L1-normalize (divide each element by sum of absolute values)."
   [x]
-  (mapv (make-l1-normalize-fn x) x))
-
-(defn make-l2-normalize-fn
-  [x]
-  (let [sum (->> x
-                 (map #(sqr %))
-                 (reduce +)
-                 sqrt)]
-    #(/ % sum)))
+  (mapv (make-lp-normalize-fn 1 x) x))
 
 (defn l2-normalize
   "L2-normalize (divide each element by the square root of the sum of squares)"
   [x]
-  (mapv (make-l2-normalize-fn x) x))
+  (mapv (make-lp-normalize-fn 2 x) x))
 
 (defn scale-feature
   ([maps key scaled-key scale-fn-factory]
