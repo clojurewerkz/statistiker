@@ -5,13 +5,13 @@
 ;TODO move this to a util NS? Or find a better implementation
 (defn factorial
   [x]
-  (println x)
+  {:pre [(>= x 0)]}
     (if (zero? x)
       1
       (loop [n x f 1]
         (if (= n 1)
             f
-            (recur (dec n) (* f n))))))
+            (recur (dec n) (* f n)))))))
 
 ; The Mutual Information is a measure of the similarity between two labels of the same data.
 ; Where P(i) is the probability of a random sample occurring in cluster U_i and P'(j) is the probability of a random sample
@@ -65,7 +65,6 @@
         norm_n (into {} (map (fn[[k v]] [k (/ v N)]) n))
         cells (keys norm_n)
         combinations (apply concat (map (fn[[i j]] ((partial triples N a b) i j)) cells))]
-
         (reduce + (map (partial inside-fn N a b) combinations))))
 
 
