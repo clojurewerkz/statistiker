@@ -5,10 +5,13 @@
 ;TODO move this to a util NS? Or find a better implementation
 (defn factorial
   [x]
-    (loop [n x f 1]
+  (println x)
+    (if (zero? x)
+      1
+      (loop [n x f 1]
         (if (= n 1)
             f
-            (recur (dec n) (* f n)))))
+            (recur (dec n) (* f n))))))
 
 ; The Mutual Information is a measure of the similarity between two labels of the same data.
 ; Where P(i) is the probability of a random sample occurring in cluster U_i and P'(j) is the probability of a random sample
@@ -27,7 +30,6 @@
         b (frequencies V)
         n (apply merge-with + (map #(hash-map [%1 %2] 1) U V))
         N (count U)
-        ;; TODO: Use a fmap.
         norm_n (into {} (map (fn[[k v]] [k (/ v N)]) n))
         cells (keys norm_n)]
     (reduce + (map
@@ -38,24 +40,34 @@
                                     (* N N))))))
                cells))))
 
-;TODO: write this!
+
+(defn inside-fn
+  [N a b [i j nij]]
+           (* (/ nij N)
+            (Math/log (/ (* N nij)  (* (a i) (b j))))
+            (/
+             (* (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
+             (* (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b i) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
+
+
+(defn triples
+  [N a b i j]
+  (let [start (max (- (+ (a i) (b j)) N) 0)
+        end (min (a i) (b j))]
+    (map #(vector i j %) (range start (inc end)))))
+
 (defn expected_mututal_information
   [U V]
-   (let [a (frequencies U)
+  (let [a (frequencies U)
         b (frequencies V)
         n (apply merge-with + (map #(hash-map [%1 %2] 1) U V))
         N (count U)
-        ;; TODO: Use a fmap.
         norm_n (into {} (map (fn[[k v]] [k (/ v N)]) n))
-        cells (keys norm_n)]
-(reduce + (map
-            (fn [[i j]]
+        cells (keys norm_n)
+        combinations (apply concat (map (fn[[i j]] ((partial triples N a b) i j)) cells))]
 
-              (/
-               (* (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
-               (* (factorial N) (n [i j])
-              )
-               cells))))
+        (reduce + (map (partial inside-fn N a b) combinations))))
+
 
 ; Adjusted Mutual Information (AMI) is an adjustment of the Mutual Information (MI) score to account for chance.
 ; AMI(U, V) = [MI(U, V) - E(MI(U, V))] / [max(H(U), H(V)) - E(MI(U, V))]
