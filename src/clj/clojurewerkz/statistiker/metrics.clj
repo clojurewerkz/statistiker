@@ -6,12 +6,30 @@
 (defn factorial
   [x]
   {:pre [(>= x 0)]}
-    (if (zero? x)
-      1
-      (loop [n x f 1]
-        (if (= n 1)
-            f
-            (recur (dec n) (* f n)))))))
+  (if (zero? x)
+    1
+    (loop [n x f 1]
+      (if (= n 1)
+        f
+        (recur (dec n) (* f n))))))
+
+(defn prot-log
+  "Protected-log(x) returns 0 if x <= 0 else returns (log x)"
+  [x]
+  (if (not (pos? x))
+    0
+    (Math/log x)))
+
+(defn prot-shannon-entropy
+  "Shannon entropy measure (inc. protected-logarithms)."
+  [v]
+  (let [sum (reduce + v)]
+    (->> v
+         (map (fn shannon-entropy-step [i]
+                (let [pi (/ i sum)]
+                  (* pi (prot-log pi)))))
+         (reduce +)
+         (* -1))))
 
 ; The Mutual Information is a measure of the similarity between two labels of the same data.
 ; Where P(i) is the probability of a random sample occurring in cluster U_i and P'(j) is the probability of a random sample
@@ -35,7 +53,7 @@
     (reduce + (map
                (fn [[i j]]
                  (* (norm_n [i j])
-                    (Math/log (/ (norm_n [i j])
+                    (prot-log (/ (norm_n [i j])
                                  (/ (* (a i) (b j))
                                     (* N N))))))
                cells))))
@@ -43,12 +61,11 @@
 
 (defn inside-fn
   [N a b [i j nij]]
-           (* (/ nij N)
-            (Math/log (/ (* N nij)  (* (a i) (b j))))
-            (/
-             (* (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
-             (* (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b i) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
-
+  (* (/ nij N)
+     (prot-log (/ (* N nij)  (* (a i) (b j))))
+     (/
+      (* (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
+      (* (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b j) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
 
 (defn triples
   [N a b i j]
@@ -65,7 +82,7 @@
         norm_n (into {} (map (fn[[k v]] [k (/ v N)]) n))
         cells (keys norm_n)
         combinations (apply concat (map (fn[[i j]] ((partial triples N a b) i j)) cells))]
-        (reduce + (map (partial inside-fn N a b) combinations))))
+    (reduce + (map (partial inside-fn N a b) combinations))))
 
 
 ; Adjusted Mutual Information (AMI) is an adjustment of the Mutual Information (MI) score to account for chance.
@@ -78,9 +95,15 @@
   [U V]
   {:pre [(= (count U) (count V))
          (not-any? coll? U)
-         (not-any? coll? V)]}
+         (not-any? coll? V)
+         (not (empty? U))
+         (not (empty? V))]}
   (let [MI (mutual_information U V)
         EMI (expected_mututal_information U V)
-        h_U (shannon-entropy U)
-        h_V (shannon-entropy V)]
-    (/ (- MI EMI) (- (max h_U h_V) EMI))))
+        h_U (prot-shannon-entropy (vals (frequencies U)))
+        h_V (prot-shannon-entropy (vals (frequencies V)))
+        _ (println (str "MI: " MI " EMI: " EMI " hU: " h_U " hV: " h_V))
+        ]
+    (if (= MI EMI)
+      0   ; Avoid some division by zero errors
+      (/ (- MI EMI) (- (max h_U h_V) EMI)))))

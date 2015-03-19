@@ -22,8 +22,8 @@
 			(adjusted_mutual_information [3 2 1] [1 2 3])
 			(adjusted_mutual_information [1 2 3] [:a :b 2])
 			1.0))
-	(is (= (adjusted_mutual_information [] []) 1.0))
-	(is (= (adjusted_mutual_information [1 2 3 4] [1 1 1 1]) 0.0))
+;; 	(is (= (adjusted_mutual_information [] []) 1.0))  ;TODO check with Miguel
+	(is (==(adjusted_mutual_information [1 2 3 4] [1 1 1 1]) 0.0))
 	(is (= (adjusted_mutual_information [:a :a :a :a] [1 1 1 1]) 1.0))
 	(is (= (adjusted_mutual_information [:a 6 :d :f] [1 2 3 4]) 1.0))
 	(is (= (adjusted_mutual_information [0, 0, :c2, :c1], [0, 0, 87, 99]) 1.0))
