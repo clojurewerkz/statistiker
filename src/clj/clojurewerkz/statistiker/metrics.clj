@@ -2,8 +2,9 @@
   (:require [clojure.math.combinatorics :refer [cartesian-product]]
             [clojurewerkz.statistiker.entropy :refer [shannon-entropy]]))
 
-;TODO move this to a util NS? Or find a better implementation
-(defn factorial
+
+(defn prot-fact
+  "Protected factorial. Special case: returns 1 if x is zero"
   [x]
   {:pre [(>= x 0)]}
   (if (zero? x)
@@ -14,7 +15,7 @@
         (recur (dec n) (* f n))))))
 
 (defn prot-log
-  "Protected-log(x) returns 0 if x <= 0 else returns (log x)"
+  "Protected-log. Special case: returns 0 if x is not positive."
   [x]
   (if (not (pos? x))
     0
@@ -43,7 +44,9 @@
   [U V]
   {:pre [(= (count U) (count V))
          (not-any? coll? U)
-         (not-any? coll? V)]}
+         (not-any? coll? V)
+         (not (empty? U))
+         (not (empty? V))]}
   (let [a (frequencies U)
         b (frequencies V)
         n (apply merge-with + (map #(hash-map [%1 %2] 1) U V))
@@ -58,16 +61,17 @@
                                     (* N N))))))
                cells))))
 
-
-(defn inside-fn
+(defn p-contingency-cell
+  "Calculate probability for one cell of a permuted contingency matrix."
   [N a b [i j nij]]
   (* (/ nij N)
      (prot-log (/ (* N nij)  (* (a i) (b j))))
      (/
-      (* (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
-      (* (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b j) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
+      (* (prot-fact (a i)) (prot-fact (b j)) (prot-fact (- N (a i))) (prot-fact (- N (b j))))
+      (* (prot-fact N) (prot-fact nij) (prot-fact (- (a i) nij)) (prot-fact (- (b j) nij)) (prot-fact (+ (- N (a i) (b j)) nij))))))
 
-(defn triples
+(defn cell-triples
+  "Generates set of indices for permutation model when calculating expected mutual information."
   [N a b i j]
   (let [start (max (- (+ (a i) (b j)) N) 0)
         end (min (a i) (b j))]
@@ -80,9 +84,9 @@
         n (apply merge-with + (map #(hash-map [%1 %2] 1) U V))
         N (count U)
         norm_n (into {} (map (fn[[k v]] [k (/ v N)]) n))
-        cells (keys norm_n)
-        combinations (apply concat (map (fn[[i j]] ((partial triples N a b) i j)) cells))]
-    (reduce + (map (partial inside-fn N a b) combinations))))
+        cells (cartesian-product  (distinct U) (distinct V))
+        combinations (apply concat (map (fn[[i j]] ((partial cell-triples N a b) i j)) cells))]
+    (reduce + (map (partial p-contingency-cell N a b) combinations))))
 
 
 ; Adjusted Mutual Information (AMI) is an adjustment of the Mutual Information (MI) score to account for chance.
@@ -95,15 +99,14 @@
   [U V]
   {:pre [(= (count U) (count V))
          (not-any? coll? U)
-         (not-any? coll? V)
-         (not (empty? U))
-         (not (empty? V))]}
-  (let [MI (mutual_information U V)
-        EMI (expected_mututal_information U V)
-        h_U (prot-shannon-entropy (vals (frequencies U)))
-        h_V (prot-shannon-entropy (vals (frequencies V)))
-        _ (println (str "MI: " MI " EMI: " EMI " hU: " h_U " hV: " h_V))
-        ]
-    (if (= MI EMI)
-      0   ; Avoid some division by zero errors
+         (not-any? coll? V)]}
+  (if (or (empty? U)
+          (= 1 (count (distinct U)) (count (distinct V)))          ;only one cluster
+          (= (count U) (count (distinct U)) (count (distinct V)))) ;every point is a singleton cluster
+    1.0    ;special limit cases
+    (let [MI (mutual_information U V)
+          EMI (expected_mututal_information U V)
+          h_U (prot-shannon-entropy (vals (frequencies U)))
+          h_V (prot-shannon-entropy (vals (frequencies V)))]
       (/ (- MI EMI) (- (max h_U h_V) EMI)))))
+
