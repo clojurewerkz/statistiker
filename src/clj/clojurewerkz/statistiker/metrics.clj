@@ -93,8 +93,8 @@
           (= 1 (count (distinct U)) (count (distinct V)))          ;only one cluster
           (= (count U) (count (distinct U)) (count (distinct V)))) ;every point is a singleton cluster
     1.0    ;special limit cases
-    (let [MI (mutual-information U V)
-          EMI (expected_mututal_information U V)
+    (let [MI  (mutual-information U V)
+          EMI (expected-mututal-information U V)
           h_U (prot-shannon-entropy (vals (frequencies U)))
           h_V (prot-shannon-entropy (vals (frequencies V)))]
       (/ (- MI EMI) (- (max h_U h_V) EMI)))))
