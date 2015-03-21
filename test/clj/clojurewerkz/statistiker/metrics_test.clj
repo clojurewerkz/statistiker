@@ -34,16 +34,16 @@
     (is (almost= (mutual-information [0 0 'docid2' 'docid'] [0 99 87 0]) 0.6931471805599453 tol))
     (is (almost= (mutual-information [0 1 2 0] [0 1 2 3]) 1.0397207708399179 tol))))
 
-(deftest adjusted_mutual-information-values
+(deftest adjusted-mutual-information-values
   (testing "adjusted mututal information calculations"
-    (is (= (adjusted_mutual-information [1 2 3] [1 2 3])
-           (adjusted_mutual-information [3 2 1] [1 2 3])
-           (adjusted_mutual-information [1 2 3] [:a :b 2])
+    (is (= (adjusted-mutual-information [1 2 3] [1 2 3])
+           (adjusted-mutual-information [3 2 1] [1 2 3])
+           (adjusted-mutual-information [1 2 3] [:a :b 2])
            1.0))
-  	(is (= (adjusted_mutual-information [] []) 1.0))
-    (is (==(adjusted_mutual-information [1 2 3 4] [1 1 1 1]) 0.0))
-    (is (= (adjusted_mutual-information [:a :a :a :a] [1 1 1 1]) 1.0))   ;special limit case
-    (is (= (adjusted_mutual-information [:a 6 :d :f] [1 2 3 4]) 1.0))
-    (is (= (adjusted_mutual-information [0 0 :c2 :c1] [0 0 87 99]) 1.0))
-    (is (almost= (adjusted_mutual-information [0 0 'docid2' 'docid'] [0 99 87 0]) -0.20000000000000023 tol))
-    (is (= (adjusted_mutual-information [0 1 2 0] [0 1 2 3]) 0.0))))
+  	(is (= (adjusted-mutual-information [] []) 1.0))
+    (is (==(adjusted-mutual-information [1 2 3 4] [1 1 1 1]) 0.0))
+    (is (= (adjusted-mutual-information [:a :a :a :a] [1 1 1 1]) 1.0))   ;special limit case
+    (is (= (adjusted-mutual-information [:a 6 :d :f] [1 2 3 4]) 1.0))
+    (is (= (adjusted-mutual-information [0 0 :c2 :c1] [0 0 87 99]) 1.0))
+    (is (almost= (adjusted-mutual-information [0 0 'docid2' 'docid'] [0 99 87 0]) -0.20000000000000023 tol))
+    (is (= (adjusted-mutual-information [0 1 2 0] [0 1 2 3]) 0.0))))
