@@ -60,7 +60,7 @@
 
 
 ;;
-;; Used by metrics 
+;; Used by metrics
 ;;
 
 (defn factorial
@@ -72,8 +72,8 @@
         f
         (recur (dec n) (*' f n)))))
 
-(defn prot-log
-  "Protected-log. Special case: returns 0 if x is equal to 0, instead of indetermination."
+(defn safe-log
+  "Safe-log function. Special case: returns 0 if x is equal to 0, instead of indetermination."
   [x]
   (if (zero? x)
     0
@@ -86,6 +86,6 @@
     (->> v
          (map (fn shannon-entropy-step [i]
                 (let [pi (/ i sum)]
-                  (* pi (prot-log pi)))))
+                  (* pi (safe-log pi)))))
          (reduce +)
          (* -1))))
