@@ -3,15 +3,22 @@
             [clojurewerkz.statistiker.entropy :refer [shannon-entropy]]
             [clojurewerkz.statistiker.utils   :refer [factorial safe-log prot-shannon-entropy]]))
 
-; The Mutual Information is a measure of the similarity between two labels of the same data.
-; Where P(i) is the probability of a random sample occurring in cluster U_i and P'(j) is the probability of a random sample
-; occurring in cluster V_j, the Mutual Information between clusterings U and V is given as:
-; MI(U,V)=\sum_{i=1}^R \sum_{j=1}^C P(i,j)\log\frac{P(i,j)}{P(i)P'(j)}
-; It takes a sequence of golden standard cluster labels (e.g,. [1 1 2 2 4 4]) and a set of predicted labels (e.g., [1 1 1 2 4 4])
-
-; This metric is independent of the absolute values of the labels: a permutation of the class or cluster label
-; values won’t change the score value in any way.
 (defn mutual-information
+  "The Mutual Information is a measure of the similarity between two labels of the
+   same data.
+
+   Where `P(i)` is the probability of a random sample occurring in cluster `U_i` and `P'(j)`
+   is the probability of a random sample occurring in cluster V_j, the Mutual
+   Information between clusterings U and V is given as:
+
+       MI(U,V)=\\sum_{i=1}^R \\sum_{j=1}^C P(i,j)\\log\\frac{P(i,j)}{P(i)P'(j)}
+
+   It takes:
+     * sequence of golden standard cluster labels (e.g,. [1 1 2 2 4 4])
+     * and a set of predicted labels (e.g., [1 1 1 2 4 4])
+
+   This metric is independent of the absolute values of the labels: a permutation of the
+   class or cluster label values won’t change the score value in any way."
   [labels-u labels-v]
   {:pre [(= (count labels-u) (count labels-v))
          (not (empty? labels-u))
@@ -58,14 +65,19 @@
         combinations (apply concat (map (fn[[i j]] ((partial cell-triples N a b) i j)) cells))]
     (reduce + (map (partial p-contingency-cell N a b) combinations))))
 
-
-                                        ; Adjusted Mutual Information (AMI) is an adjustment of the Mutual Information (MI) score to account for chance.
-                                        ; AMI(U, V) = [MI(U, V) - E(MI(U, V))] / [max(H(U), H(V)) - E(MI(U, V))]
-                                        ; It takes a sequence of golden standard cluster labels (e.g,. [1 1 2 2 4 4]) and a set of predicted labels (e.g., [1 1 1 2 4 4])
-
-                                        ; This metric is independent of the absolute values of the labels: a permutation of the class
-                                        ; or cluster label values won’t change the score value in any way.
 (defn adjusted_mutual-information
+  "Adjusted Mutual Information (AMI) is an adjustment of the Mutual Information (MI)
+   score to account for chance.
+
+       AMI(U, V) = [MI(U, V) - E(MI(U, V))] / [max(H(U), H(V)) - E(MI(U, V))]
+
+   It takes
+
+     * a sequence of golden standard cluster labels (e.g,. [1 1 2 2 4 4])
+     * and a set of predicted labels (e.g., [1 1 1 2 4 4])
+
+   This metric is independent of the absolute values of the labels: a permutation of the class
+   or cluster label values won’t change the score value in any way."
   [U V]
   {:pre [(= (count U) (count V))
          (not-any? coll? U)
