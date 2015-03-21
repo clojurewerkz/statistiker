@@ -38,8 +38,8 @@
   (* (/ nij N)
      (prot-log (/ (* N nij)  (* (a i) (b j))))
      (/
-      (* (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
-      (* (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b j) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
+      (*' (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
+      (*' (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b j) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
 
 (defn cell-triples
   "Generates set of indices for permutation model when calculating expected mutual information."

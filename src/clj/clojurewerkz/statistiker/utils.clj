@@ -70,7 +70,7 @@
     (loop [n x f 1]
       (if (<= n 1) ; It assigns a value of 1.0 for "(factorial 0)""
         f
-        (recur (dec n) (* f n)))))
+        (recur (dec n) (*' f n)))))
 
 (defn prot-log
   "Protected-log. Special case: returns 0 if x is equal to 0, instead of indetermination."
