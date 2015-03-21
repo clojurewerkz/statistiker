@@ -56,3 +56,36 @@
   [wat center tolerance]
   (and (>= wat (- center tolerance))
        (<= wat (+ center tolerance))))
+
+
+
+;;
+;; Used by metrics 
+;;
+
+(defn factorial
+  "Protected factorial. Special case: returns 1 if x is zero"
+  [x]
+  {:pre [(>= x 0)]}
+    (loop [n x f 1]
+      (if (<= n 1) ; It assigns a value of 1.0 for "(factorial 0)""
+        f
+        (recur (dec n) (* f n)))))
+
+(defn prot-log
+  "Protected-log. Special case: returns 0 if x is equal to 0, instead of indetermination."
+  [x]
+  (if (zero? x)
+    0
+    (Math/log x)))
+
+(defn prot-shannon-entropy
+  "Protected Shannon entropy measure (inc. protected-logarithms)."
+  [v]
+  (let [sum (reduce + v)]
+    (->> v
+         (map (fn shannon-entropy-step [i]
+                (let [pi (/ i sum)]
+                  (* pi (prot-log pi)))))
+         (reduce +)
+         (* -1))))

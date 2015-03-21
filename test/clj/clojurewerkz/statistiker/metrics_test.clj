@@ -2,7 +2,7 @@
   (:require [clojurewerkz.statistiker.metrics :refer :all]
             [clojurewerkz.statistiker.utils :refer [almost=]]
             [clojure.test :refer :all]))
-
+; Tolerance for values
 (def tol 1e-8)
 
 (deftest wrong-input-mi

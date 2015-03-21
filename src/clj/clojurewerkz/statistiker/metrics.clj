@@ -1,36 +1,7 @@
 (ns clojurewerkz.statistiker.metrics
   (:require [clojure.math.combinatorics :refer [cartesian-product]]
-            [clojurewerkz.statistiker.entropy :refer [shannon-entropy]]))
-
-
-(defn prot-fact
-  "Protected factorial. Special case: returns 1 if x is zero"
-  [x]
-  {:pre [(>= x 0)]}
-  (if (zero? x)
-    1
-    (loop [n x f 1]
-      (if (= n 1)
-        f
-        (recur (dec n) (* f n))))))
-
-(defn prot-log
-  "Protected-log. Special case: returns 0 if x is not positive."
-  [x]
-  (if (not (pos? x))
-    0
-    (Math/log x)))
-
-(defn prot-shannon-entropy
-  "Shannon entropy measure (inc. protected-logarithms)."
-  [v]
-  (let [sum (reduce + v)]
-    (->> v
-         (map (fn shannon-entropy-step [i]
-                (let [pi (/ i sum)]
-                  (* pi (prot-log pi)))))
-         (reduce +)
-         (* -1))))
+            [clojurewerkz.statistiker.entropy :refer [shannon-entropy]]
+            [clojurewerkz.statistiker.utils :refer [factorial prot-log prot-shannon-entropy]]))
 
 ; The Mutual Information is a measure of the similarity between two labels of the same data.
 ; Where P(i) is the probability of a random sample occurring in cluster U_i and P'(j) is the probability of a random sample
@@ -67,8 +38,8 @@
   (* (/ nij N)
      (prot-log (/ (* N nij)  (* (a i) (b j))))
      (/
-      (* (prot-fact (a i)) (prot-fact (b j)) (prot-fact (- N (a i))) (prot-fact (- N (b j))))
-      (* (prot-fact N) (prot-fact nij) (prot-fact (- (a i) nij)) (prot-fact (- (b j) nij)) (prot-fact (+ (- N (a i) (b j)) nij))))))
+      (* (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
+      (* (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b j) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
 
 (defn cell-triples
   "Generates set of indices for permutation model when calculating expected mutual information."
