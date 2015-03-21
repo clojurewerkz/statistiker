@@ -1,7 +1,7 @@
 (ns clojurewerkz.statistiker.metrics
-  (:require [clojure.math.combinatorics :refer [cartesian-product]]
+  (:require [clojure.math.combinatorics       :refer [cartesian-product]]
             [clojurewerkz.statistiker.entropy :refer [shannon-entropy]]
-            [clojurewerkz.statistiker.utils :refer [factorial prot-log prot-shannon-entropy]]))
+            [clojurewerkz.statistiker.utils   :refer [factorial safe-log prot-shannon-entropy]]))
 
 ; The Mutual Information is a measure of the similarity between two labels of the same data.
 ; Where P(i) is the probability of a random sample occurring in cluster U_i and P'(j) is the probability of a random sample
