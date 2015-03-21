@@ -44,28 +44,35 @@
   (* (/ nij N)
      (safe-log (/ (* N nij)  (* (a i) (b j))))
      (/
-      (*' (factorial (a i)) (factorial (b j)) (factorial (- N (a i))) (factorial (- N (b j))))
-      (*' (factorial N) (factorial nij) (factorial (- (a i) nij)) (factorial (- (b j) nij)) (factorial (+ (- N (a i) (b j)) nij))))))
+      (*' (factorial (a i))
+          (factorial (b j))
+          (factorial (- N (a i)))
+          (factorial (- N (b j))))
+      (*' (factorial N)
+          (factorial nij)
+          (factorial (- (a i) nij))
+          (factorial (- (b j) nij))
+          (factorial (+ (- N (a i) (b j)) nij))))))
 
 (defn cell-triples
   "Generates set of indices for permutation model when calculating expected mutual information."
   [N a b i j]
   (let [start (max (- (+ (a i) (b j)) N) 0)
-        end (min (a i) (b j))]
+        end   (min (a i) (b j))]
     (map #(vector i j %) (range start (inc end)))))
 
-(defn expected_mututal_information
+(defn expected-mututal-information
   [U V]
-  (let [a (frequencies U)
-        b (frequencies V)
-        n (apply merge-with + (map #(hash-map [%1 %2] 1) U V))
-        N (count U)
-        norm-n (into {} (map (fn[[k v]] [k (/ v N)]) n))
-        cells (cartesian-product  (distinct U) (distinct V))
+  (let [a            (frequencies U)
+        b            (frequencies V)
+        n            (apply merge-with + (map #(hash-map [%1 %2] 1) U V))
+        N            (count U)
+        norm-n       (into {} (map (fn[[k v]] [k (/ v N)]) n))
+        cells        (cartesian-product  (distinct U) (distinct V))
         combinations (apply concat (map (fn[[i j]] ((partial cell-triples N a b) i j)) cells))]
     (reduce + (map (partial p-contingency-cell N a b) combinations))))
 
-(defn adjusted_mutual-information
+(defn adjusted-mutual-information
   "Adjusted Mutual Information (AMI) is an adjustment of the Mutual Information (MI)
    score to account for chance.
 
