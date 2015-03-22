@@ -1,7 +1,8 @@
 (ns clojurewerkz.statistiker.metrics-test
   (:require [clojurewerkz.statistiker.metrics :refer :all]
-            [clojurewerkz.statistiker.utils :refer [almost=]]
-            [clojure.test :refer :all]))
+            [clojurewerkz.statistiker.utils   :refer [almost=]]
+            [clojure.test                     :refer :all]))
+
 ; Tolerance for values
 (def tol 1e-8)
 
@@ -16,7 +17,7 @@
 
 (deftest wrong-input-ami
   (testing "invalid inputs for adjusted-mutual-information"
-    (are [U V] (thrown? AssertionError (adjusted-mutual-information U V)) 
+    (are [U V] (thrown? AssertionError (adjusted-mutual-information U V))
       [1 2 3]       [2 3]
       []            [2 3]
       [:b :a :c]    [2 :a]
@@ -25,7 +26,7 @@
 (deftest mutual-information-values
   (testing "mutual information calculations"
     (are [U V s] (almost= (mutual-information U V) s tol)
-      [3 2 1]                 [1 2 3]     1.0986122886681096 
+      [3 2 1]                 [1 2 3]     1.0986122886681096
       [1 2 3]                 [1 2 3]     1.0986122886681096
       [1 1 1]                 [1 1 1]     0.0
       [1 2 3 4]               [1 1 1 1]   0.0
