@@ -7,7 +7,7 @@
   :dependencies [[org.clojure/clojure              "1.5.1"]
                  [org.clojure/math.combinatorics   "0.0.7"]
                  [org.apache.commons/commons-math3 "3.4.1"]
-                 [net.mikera/core.matrix           "0.20.0"]
+                 [net.mikera/core.matrix           "0.33.2"]
 
                  [prismatic/schema                 "0.2.2"]]
   :core.typed {:check [clojurewerkz.statistiker.optimization]}
