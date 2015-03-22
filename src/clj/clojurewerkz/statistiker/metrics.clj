@@ -19,15 +19,17 @@
 
    This metric is independent of the absolute values of the labels: a permutation of the
    class or cluster label values won’t change the score value in any way."
-  [labels-u labels-v]
-  {:pre [(= (count labels-u) (count labels-v))
-         (not (empty? labels-u))
-         (not (empty? labels-v))]}
-  (let [freq-u        (frequencies labels-u)
-        freq-v        (frequencies labels-v)
-        freq-combined (->> (map vector labels-u labels-v)
+  [U V]
+  {:pre [(= (count U) (count V))
+         (not (empty? U))
+         (not (empty? V))
+         (not-any? coll? U)
+         (not-any? coll? V)]}
+  (let [freq-u        (frequencies U)
+        freq-v        (frequencies V)
+        freq-combined (->> (map vector U V)
                            frequencies)
-        labels-count  (count labels-u)
+        labels-count  (count U)
         norm-n        (zipmap (keys freq-combined)
                               (map #(/ % labels-count) (vals freq-combined)))]
     (->> norm-n
