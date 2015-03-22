@@ -64,7 +64,7 @@
 ;;
 
 (defn factorial
-  "Protected factorial. Special case: returns 1 if x is zero"
+  "Safe factorial. Special case: returns 1 if x is zero"
   [x]
   {:pre [(>= x 0)]}
     (loop [n x f 1]
@@ -79,8 +79,8 @@
     0
     (Math/log x)))
 
-(defn prot-shannon-entropy
-  "Protected Shannon entropy measure (inc. protected-logarithms)."
+(defn safe-shannon-entropy
+  "Safe Shannon entropy measure (inc. protected-logarithms)."
   [v]
   (let [sum (reduce + v)]
     (->> v
