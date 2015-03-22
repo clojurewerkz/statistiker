@@ -90,8 +90,6 @@
   [U V]
   {:pre [(= (count U) (count V))
          (not-any? coll? U)
-         (not-any? coll? V)
-         (not-any? coll? U)
          (not-any? coll? V)]}
   (if (or (empty? U)
           (= 1 (count (distinct U)) (count (distinct V)))          ;only one cluster
