@@ -6,7 +6,7 @@ for mining datasets.
 
 ## Project Goals
 
- * Provide a Clojure-friendly, easy way for statistical analysis, inference and machine leraning
+ * Provide a Clojure-friendly, easy way for statistical analysis, inference and machine learning
  * Be reasonably feature-complete (provide majority of things an advanced user may demand)
  * Be well maintained.
  * Be well documented.
